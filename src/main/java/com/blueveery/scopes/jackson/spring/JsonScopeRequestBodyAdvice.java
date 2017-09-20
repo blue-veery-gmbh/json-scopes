@@ -1,6 +1,7 @@
 package com.blueveery.scopes.jackson.spring;
 
 import com.blueveery.scopes.JsonScope;
+import com.blueveery.scopes.JsonScopeFinder;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -15,7 +16,7 @@ import java.lang.reflect.Type;
  * Created by tomek on 23.09.16.
  */
 @ControllerAdvice
-public class JsonScopeRequestBodyAdvice extends RequestBodyAdviceAdapter implements JsonScopeFinder{
+public class JsonScopeRequestBodyAdvice extends RequestBodyAdviceAdapter implements JsonScopeFinder {
     @Override
     public boolean supports(MethodParameter methodParameter, Type targetType, Class<? extends HttpMessageConverter<?>> converterType) {
         return (AbstractJackson2HttpMessageConverter.class.isAssignableFrom(converterType) &&
