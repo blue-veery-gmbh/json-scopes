@@ -1,6 +1,8 @@
-package com.blueveery.jackson.scopes;
+package com.blueveery.scopes.jackson;
 
 import com.blueveery.core.model.BaseEntity;
+import com.blueveery.scopes.JsonScope;
+import com.blueveery.scopes.ScopeEvaluator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -9,17 +11,19 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.deser.ResolvableDeserializer;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.jsontype.TypeDeserializer;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.io.IOException;
 
 /**
  * Created by tomek on 23.09.16.
  */
-public class ScopeDeserializer extends StdDeserializer<BaseEntity> implements ScopeEvaluator, ResolvableDeserializer {
+public class BaseEntityDeserializer extends StdDeserializer<BaseEntity> implements ScopeEvaluator, ResolvableDeserializer {
 
     private  JsonDeserializer<?> defaultDeserializer;
 
-    public ScopeDeserializer(JsonDeserializer<?> deserializer) {
+
+    public BaseEntityDeserializer(JsonDeserializer<?> deserializer) {
         super(BaseEntity.class);
         this.defaultDeserializer = deserializer;
     }
@@ -36,7 +40,19 @@ public class ScopeDeserializer extends StdDeserializer<BaseEntity> implements Sc
         JsonScope jsonScope = (JsonScope) context.getAttribute("jsonScope");
         //todo finish scope impl
 
+        PublicTreeTraversingParser parser = (PublicTreeTraversingParser) context.getAttribute("parser");
+        EntityResolver entityResolver = (EntityResolver) context.getAttribute("entityResolver");
+
+
+        if(parser.getCurrentNode() instanceof ObjectNode){
+            ObjectNode entityNode = (ObjectNode) parser.getCurrentNode();
+            if(entityNode.size() == 1 && entityNode.has("id")) {
+                return entityResolver.resolveId(parser.getCurrentNode().asText());
+            }
+        }
+
         BaseEntity baseEntity = (BaseEntity) defaultDeserializer.deserializeWithType(jsonParser, context, typeDeserializer);
+        entityResolver.bindItem(baseEntity.getJsonId(), baseEntity);
         return baseEntity;
     }
 

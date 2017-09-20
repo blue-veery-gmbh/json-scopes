@@ -1,10 +1,13 @@
-package com.blueveery.jackson.scopes.spring;
+package com.blueveery.scopes.jackson.spring;
 
-import com.blueveery.jackson.scopes.JsonScope;
+import com.blueveery.scopes.jackson.EntityResolver;
+import com.blueveery.scopes.JsonScope;
+import com.blueveery.scopes.jackson.PublicTreeTraversingParser;
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.cfg.ContextAttributes;
@@ -31,12 +34,13 @@ public class ScopedJackson2HttpMessageConverter extends MappingJackson2HttpMessa
             throws IOException, HttpMessageNotReadableException {
 
         JavaType javaType = getJavaType(type, contextClass);
+        ContextAttributes contxtAttributes = ContextAttributes.getEmpty();
         try {
             ObjectReader objectReader = objectMapper.reader();
             if(inputMessage instanceof ScopedJacksonInputMessage){
                 JsonScope currentScope = ((ScopedJacksonInputMessage)inputMessage).getCurrentScope();
-                ContextAttributes scopeAttr = ContextAttributes.getEmpty().withPerCallAttribute("jsonScope", currentScope);
-                objectReader = objectReader.with(scopeAttr);
+                contxtAttributes = contxtAttributes.withPerCallAttribute("jsonScope", currentScope);
+                objectReader = objectReader.with(contxtAttributes);
             }
             if (inputMessage instanceof MappingJacksonInputMessage) {
                 Class<?> deserializationView = ((MappingJacksonInputMessage) inputMessage).getDeserializationView();
@@ -45,7 +49,14 @@ public class ScopedJackson2HttpMessageConverter extends MappingJackson2HttpMessa
                             readValue(inputMessage.getBody());
                 }
             }
-            return objectReader.forType(javaType).readValue(inputMessage.getBody());
+            JsonNode rootNode = objectMapper.readTree(inputMessage.getBody());
+            PublicTreeTraversingParser jsonParser = new PublicTreeTraversingParser(rootNode);
+            contxtAttributes = contxtAttributes.withPerCallAttribute("parser", jsonParser);
+            objectReader = objectReader.with(contxtAttributes);
+            contxtAttributes = contxtAttributes.withPerCallAttribute("entityResolver", new EntityResolver());
+            objectReader = objectReader.with(contxtAttributes);
+
+            return objectReader.forType(javaType).readValue(jsonParser);
         }
         catch (IOException ex) {
             throw new HttpMessageNotReadableException("Could not read document: " + ex.getMessage(), ex);

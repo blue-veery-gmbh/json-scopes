@@ -1,4 +1,4 @@
-package com.blueveery.jackson.scopes;
+package com.blueveery.scopes.jackson;
 
 import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.JsonNode;

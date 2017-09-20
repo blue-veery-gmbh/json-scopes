@@ -1,9 +1,8 @@
-package com.blueveery.jackson.scopes;
+package com.blueveery.scopes.jackson;
 
 import com.blueveery.core.model.BaseEntity;
-import com.blueveery.jackson.scopes.hibernate.HibernateLazyMethodHandler;
-import com.fasterxml.jackson.annotation.ObjectIdGenerator;
-import com.fasterxml.jackson.annotation.ObjectIdResolver;
+import com.blueveery.scopes.EntityReference;
+import com.blueveery.scopes.hibernate.HibernateLazyMethodHandler;
 import javassist.util.proxy.ProxyFactory;
 import javassist.util.proxy.ProxyObject;
 import org.hibernate.proxy.HibernateProxy;
@@ -14,26 +13,24 @@ import java.util.Map;
 /**
  * Created by tomek on 28.09.16.
  */
-public class ScopeObjectIdResolver implements ObjectIdResolver {
+public class EntityResolver {
     private ShortNameIdResolver shortNameIdResolver = new ShortNameIdResolver();
-    private Map<ObjectIdGenerator.IdKey, BaseEntity> items = new HashMap<>();
-    @Override
-    public void bindItem(ObjectIdGenerator.IdKey id, Object pojo) {
+    private Map<String, BaseEntity> items = new HashMap<>();
+    public void bindItem(String id, BaseEntity entity) {
         if(!items.containsKey(id)) {
-            items.put(id, (BaseEntity) pojo);
+            items.put(id, entity);
         }else{
-            throw new IllegalStateException("id is allready bound");
+            throw new IllegalStateException("id is already bound");
         }
 
     }
 
-    @Override
-    public Object resolveId(ObjectIdGenerator.IdKey id) {
+    public BaseEntity resolveId(String id) {
         try {
             BaseEntity entity = items.get(id);
             if (entity == null) {
                 //todo proxy clasess need to be cached
-                String idComponents[] = ((String)id.key).split("/");
+                String idComponents[] = (id).split("/");
                 Class baseClass = shortNameIdResolver.typeFromId(null, idComponents[0]).getRawClass();
                 ProxyFactory proxyFactory = new ProxyFactory();
                 proxyFactory.setSuperclass(baseClass);
@@ -41,22 +38,12 @@ public class ScopeObjectIdResolver implements ObjectIdResolver {
                 Class proxyClass = proxyFactory.createClass();
                 entity = (BaseEntity) proxyClass.newInstance();
                 ((ProxyObject)entity).setHandler(new HibernateLazyMethodHandler());
-                entity.setJsonId(id.key.toString());
+                entity.setJsonId(id);
                 bindItem(id, entity);
             }
             return entity;
-        }catch(Exception e){// ReflectiveOperationException
+        }catch(Exception e){
             throw new IllegalStateException(e);
         }
-    }
-
-    @Override
-    public ObjectIdResolver newForDeserialization(Object context) {
-        return new ScopeObjectIdResolver();
-    }
-
-    @Override
-    public boolean canUseFor(ObjectIdResolver resolverType) {
-        return getClass() == resolverType.getClass();
     }
 }

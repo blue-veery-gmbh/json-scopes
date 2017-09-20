@@ -1,4 +1,4 @@
-package com.blueveery.jackson.scopes.hibernate;
+package com.blueveery.scopes.hibernate;
 
 import com.blueveery.core.model.BaseEntity;
 import org.hibernate.HibernateException;

@@ -1,6 +1,6 @@
-package com.blueveery.jackson.scopes.spring;
+package com.blueveery.scopes.jackson.spring;
 
-import com.blueveery.jackson.scopes.JsonScope;
+import com.blueveery.scopes.JsonScope;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;

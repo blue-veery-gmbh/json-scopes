@@ -1,4 +1,4 @@
-package com.blueveery.jackson.scopes;
+package com.blueveery.scopes;
 
 import com.blueveery.core.model.BaseEntity;
 

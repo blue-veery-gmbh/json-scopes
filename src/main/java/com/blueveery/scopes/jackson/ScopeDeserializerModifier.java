@@ -1,4 +1,4 @@
-package com.blueveery.jackson.scopes;
+package com.blueveery.scopes.jackson;
 
 import com.blueveery.core.model.BaseEntity;
 import com.fasterxml.jackson.databind.BeanDescription;
@@ -16,8 +16,8 @@ public class ScopeDeserializerModifier extends BeanDeserializerModifier {
 //            return new EntityReferenceDeserializer();
 //        }
         if (BaseEntity.class.isAssignableFrom(beanDesc.getBeanClass())) {
-            ScopeDeserializer scopeDeserializer = new ScopeDeserializer(deserializer);
-            return scopeDeserializer;
+            BaseEntityDeserializer baseEntityDeserializer = new BaseEntityDeserializer(deserializer);
+            return baseEntityDeserializer;
         }
         return deserializer;
     }

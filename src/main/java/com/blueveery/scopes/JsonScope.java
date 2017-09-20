@@ -1,4 +1,4 @@
-package com.blueveery.jackson.scopes;
+package com.blueveery.scopes;
 
 
 import java.lang.annotation.ElementType;

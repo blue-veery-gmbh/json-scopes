@@ -1,4 +1,4 @@
-package com.blueveery.jackson.scopes;
+package com.blueveery.scopes.jackson;
 
 import com.blueveery.core.model.BaseEntity;
 import com.fasterxml.jackson.databind.BeanDescription;
@@ -13,7 +13,7 @@ public class ScopeSerializerModifier extends BeanSerializerModifier {
     @Override
     public JsonSerializer<?> modifySerializer(SerializationConfig config, BeanDescription beanDesc, JsonSerializer<?> serializer) {
         if (BaseEntity.class.isAssignableFrom(beanDesc.getBeanClass())) {
-            return new ScopeSerializer((JsonSerializer<Object>) serializer);
+            return new BaseEntitySerializer((JsonSerializer<Object>) serializer);
         }
         return serializer;
     }

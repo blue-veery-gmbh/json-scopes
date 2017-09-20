@@ -1,6 +1,5 @@
-package com.blueveery.jackson.scopes;
+package com.blueveery.scopes.jackson;
 
-import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
 /**

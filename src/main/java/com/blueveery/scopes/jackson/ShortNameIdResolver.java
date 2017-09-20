@@ -1,4 +1,4 @@
-package com.blueveery.jackson.scopes;
+package com.blueveery.scopes.jackson;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.DatabindContext;
@@ -29,6 +29,10 @@ public class ShortNameIdResolver implements TypeIdResolver {
         if(object instanceof ProxyObject){
             clazz = object.getClass().getSuperclass();
         }
+        return idFromClass(clazz);
+    }
+
+    public String idFromClass(Class clazz) {
         String typeId = clazz.getSimpleName().toLowerCase();
         if(!typeIdToJavaTypeMap.containsKey(typeId)){
             JavaType newJavaType = TypeFactory.defaultInstance().constructType(clazz);

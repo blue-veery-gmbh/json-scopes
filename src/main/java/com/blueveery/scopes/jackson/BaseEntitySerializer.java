@@ -1,6 +1,8 @@
-package com.blueveery.jackson.scopes;
+package com.blueveery.scopes.jackson;
 
 import com.blueveery.core.model.BaseEntity;
+import com.blueveery.scopes.JsonScope;
+import com.blueveery.scopes.ScopeEvaluator;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
@@ -15,9 +17,9 @@ import java.util.Set;
 /**
  * Created by tomek on 23.09.16.
  */
-public class ScopeSerializer  extends StdSerializer<BaseEntity> implements ScopeEvaluator {
+public class BaseEntitySerializer extends StdSerializer<BaseEntity> implements ScopeEvaluator {
     private JsonSerializer<Object> defaultSerializer;
-    protected ScopeSerializer(JsonSerializer<Object> serializer) {
+    protected BaseEntitySerializer(JsonSerializer<Object> serializer) {
         super(BaseEntity.class);
         defaultSerializer = serializer;
     }
@@ -39,7 +41,10 @@ public class ScopeSerializer  extends StdSerializer<BaseEntity> implements Scope
             defaultSerializer.serializeWithType(value, jsonGenerator, serializers, typeSer);
         }else{
             typeSer.getTypeIdResolver().idFromValue(value);//todo remove it when typeid reslover will be filed with data
+            jsonGenerator.writeStartObject();
+            jsonGenerator.writeFieldName("id");
             jsonGenerator.writeObject(value.getJsonId());
+            jsonGenerator.writeEndObject();
         }
     }
 
