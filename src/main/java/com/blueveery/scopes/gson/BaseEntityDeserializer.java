@@ -6,25 +6,23 @@ import com.blueveery.scopes.jackson.ShortNameIdResolver;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.JavaType;
 import com.google.gson.*;
-import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
 
-public class BaseEntityDeserializer implements JsonDeserializer {
+public class BaseEntityDeserializer implements JsonDeserializer<BaseEntity> {
+    private ReflectionUtil reflectionUtil;
     private ShortNameIdResolver shortNameIdResolver;
     private EntityResolver entityResolver = new EntityResolver();
 
-    public void setShortNameIdResolver(ShortNameIdResolver shortNameIdResolver) {
+    public BaseEntityDeserializer(ReflectionUtil reflectionUtil, ShortNameIdResolver shortNameIdResolver) {
+        this.reflectionUtil = reflectionUtil;
         this.shortNameIdResolver = shortNameIdResolver;
     }
 
     @Override
-    public Object deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context) throws JsonParseException {
+    public BaseEntity deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context) throws JsonParseException {
 
         JsonObject jsonObject = jsonElement.getAsJsonObject();
 
@@ -40,8 +38,7 @@ public class BaseEntityDeserializer implements JsonDeserializer {
             entity.setJsonId(id);
             entityResolver.bindItem(id, entity);
 
-            for (Field field : getDeclaredFields(entity)) {
-                field.setAccessible(true);
+            for (Field field : reflectionUtil.getDeclaredFields(entity)) {
                 if(field.getGenericType() instanceof ParameterizedType){
                     ParameterizedType parameterizedType = (ParameterizedType) field.getGenericType();
                     field.set(entity, context.deserialize(jsonObject.get(field.getName()), parameterizedType));
@@ -57,18 +54,5 @@ public class BaseEntityDeserializer implements JsonDeserializer {
         }
     }
 
-    private List<Field> getDeclaredFields(BaseEntity entity) {
-        Class currentClass = entity.getClass();
-        List<Field> fields = new ArrayList<>();
-        while (currentClass != Object.class) {
-            for (Field field : currentClass.getDeclaredFields()) {
-                if (!Modifier.isStatic(field.getModifiers()) && !Modifier.isFinal(field.getModifiers()) && field.getAnnotation(JsonIgnore.class) == null) {
-                    fields.add(field);
-                }
-            }
-            currentClass = currentClass.getSuperclass();
 
-        }
-        return fields;
-    }
 }
