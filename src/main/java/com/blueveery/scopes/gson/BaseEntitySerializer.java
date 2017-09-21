@@ -18,7 +18,7 @@ import java.util.Set;
 public class BaseEntitySerializer implements JsonSerializer<BaseEntity>, ScopeEvaluator {
     private JsonScope jsonScope;
     private ReflectionUtil reflectionUtil;
-    private Set<BaseEntity> serializationSet = new HashSet<>();
+    private ThreadLocal<Set<BaseEntity>> serializationSetThreadLocal = new ThreadLocal<>();
 
     public BaseEntitySerializer(JsonScope jsonScope, ReflectionUtil reflectionUtil) {
         this.jsonScope = jsonScope;
@@ -28,26 +28,40 @@ public class BaseEntitySerializer implements JsonSerializer<BaseEntity>, ScopeEv
     @Override
     public JsonElement serialize(BaseEntity entity, Type type, JsonSerializationContext context) {
 
-        boolean isInScope = isInScope(entity, jsonScope, serializationSet);
-        JsonObject jsonObject = new JsonObject();
+        boolean serializationSetCreated = false;
+        Set<BaseEntity> serializationSet = serializationSetThreadLocal.get();
+        if(serializationSet==null){
+            serializationSetCreated = true;
+            serializationSet = new HashSet<>();
+            serializationSetThreadLocal.set(serializationSet);
+        }
 
-        if(!serializationSet.contains(entity) && isInScope) {
-            serializationSet.add(entity);
-            try {
-                for (Field field : reflectionUtil.getDeclaredFields(entity)) {
-                    Object fieldValue = field.get(entity);
-                    if(field.getGenericType() instanceof ParameterizedType){
-                        ParameterizedType parameterizedType = (ParameterizedType) field.getGenericType();
-                        jsonObject.add(field.getName(), context.serialize(fieldValue, parameterizedType));
-                    }else {
-                        jsonObject.add(field.getName(), context.serialize(fieldValue));
+        JsonObject jsonObject = null;
+        try {
+            boolean isInScope = isInScope(entity, jsonScope, serializationSet);
+            jsonObject = new JsonObject();
+
+            if(!serializationSet.contains(entity) && isInScope) {
+                serializationSet.add(entity);
+                    jsonObject.add("id", context.serialize(entity.getJsonId()));
+                    for (Field field : reflectionUtil.getDeclaredFields(entity)) {
+                        Object fieldValue = field.get(entity);
+                        if(field.getGenericType() instanceof ParameterizedType){
+                            ParameterizedType parameterizedType = (ParameterizedType) field.getGenericType();
+                            jsonObject.add(field.getName(), context.serialize(fieldValue, parameterizedType));
+                        }else {
+                            jsonObject.add(field.getName(), context.serialize(fieldValue));
+                        }
                     }
-                }
-            } catch (IllegalAccessException e) {
-                throw new IllegalStateException(e);
+            }else{
+                jsonObject.addProperty("ref", entity.getJsonId());
             }
-        }else{
-            jsonObject.addProperty("ref", entity.getJsonId());
+        } catch (IllegalAccessException e) {
+            throw new IllegalStateException(e);
+        } finally {
+            if(serializationSetCreated){
+                serializationSetThreadLocal.set(null);
+            }
         }
 
         return jsonObject;
