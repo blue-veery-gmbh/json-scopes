@@ -1,6 +1,5 @@
 package com.blueveery.scopes;
 
-import com.blueveery.scopes.JsonScope;
 import org.springframework.core.MethodParameter;
 
 /**
