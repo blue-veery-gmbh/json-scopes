@@ -1,7 +1,8 @@
 package com.blueveery.scopes.jackson.spring;
 
-import com.blueveery.scopes.jackson.EntityResolver;
+import com.blueveery.scopes.EntityResolver;
 import com.blueveery.scopes.JsonScope;
+import com.blueveery.scopes.ShortTypeNameIdResolver;
 import com.blueveery.scopes.jackson.PublicTreeTraversingParser;
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -53,7 +54,7 @@ public class ScopedJackson2HttpMessageConverter extends MappingJackson2HttpMessa
             PublicTreeTraversingParser jsonParser = new PublicTreeTraversingParser(rootNode);
             contxtAttributes = contxtAttributes.withPerCallAttribute("parser", jsonParser);
             objectReader = objectReader.with(contxtAttributes);
-            contxtAttributes = contxtAttributes.withPerCallAttribute("entityResolver", new EntityResolver());
+            contxtAttributes = contxtAttributes.withPerCallAttribute("entityResolver", new EntityResolver(new ShortTypeNameIdResolver()));
             objectReader = objectReader.with(contxtAttributes);
 
             return objectReader.forType(javaType).readValue(jsonParser);

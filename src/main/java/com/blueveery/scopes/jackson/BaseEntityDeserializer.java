@@ -1,6 +1,7 @@
 package com.blueveery.scopes.jackson;
 
 import com.blueveery.core.model.BaseEntity;
+import com.blueveery.scopes.EntityResolver;
 import com.blueveery.scopes.JsonScope;
 import com.blueveery.scopes.ScopeEvaluator;
 import com.fasterxml.jackson.core.JsonParser;

@@ -1,5 +1,6 @@
 package com.blueveery.scopes.jackson;
 
+import com.blueveery.scopes.ShortTypeNameIdResolver;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.DatabindContext;
 import com.fasterxml.jackson.databind.JavaType;
@@ -14,31 +15,19 @@ import java.util.Map;
 /**
  * Created by tomek on 23.09.16.
  */
-public class ShortNameIdResolver implements TypeIdResolver {
+public class ShortTypeNameIdResolverJackson extends ShortTypeNameIdResolver implements TypeIdResolver {
     private JavaType javaType = null;
-    static private Map<String, JavaType> typeIdToJavaTypeMap = new HashMap<>();
 
     @Override
     public void init(JavaType javaType) {
         this.javaType = javaType;
     }
 
-    @Override
-    public String idFromValue(Object object) {
-        Class clazz = object.getClass();
-        if(object instanceof ProxyObject){
-            clazz = object.getClass().getSuperclass();
-        }
-        return idFromClass(clazz);
-    }
 
-    public String idFromClass(Class clazz) {
-        String typeId = clazz.getSimpleName().toLowerCase();
-        if(!typeIdToJavaTypeMap.containsKey(typeId)){
-            JavaType newJavaType = TypeFactory.defaultInstance().constructType(clazz);
-            typeIdToJavaTypeMap.put(typeId, newJavaType);
-        }
-        return typeId;
+    @Deprecated
+    @Override
+    public JavaType typeFromId(String typeId) {
+        return TypeFactory.defaultInstance().constructType(classFromId(typeId));
     }
 
     @Override
@@ -51,16 +40,9 @@ public class ShortNameIdResolver implements TypeIdResolver {
         return null;
     }
 
-    @Deprecated
-    @Override
-    public JavaType typeFromId(String typeId) {
-        return typeIdToJavaTypeMap.get(typeId);
-    }
-
     @Override
     public JavaType typeFromId(DatabindContext databindContext, String typeId) {
-        String[] idComponents = typeId.split("/");
-        return typeIdToJavaTypeMap.get(idComponents[0]);
+        return TypeFactory.defaultInstance().constructType(classFromId(typeId));
     }
 
     @Override

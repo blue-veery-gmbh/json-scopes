@@ -1,7 +1,6 @@
-package com.blueveery.scopes.jackson;
+package com.blueveery.scopes;
 
 import com.blueveery.core.model.BaseEntity;
-import com.blueveery.scopes.EntityReference;
 import com.blueveery.scopes.hibernate.HibernateLazyMethodHandler;
 import javassist.util.proxy.ProxyFactory;
 import javassist.util.proxy.ProxyObject;
@@ -14,8 +13,13 @@ import java.util.Map;
  * Created by tomek on 28.09.16.
  */
 public class EntityResolver {
-    private ShortNameIdResolver shortNameIdResolver = new ShortNameIdResolver();
+    private ShortTypeNameIdResolver shortTypeNameIdResolver;
     private Map<String, BaseEntity> items = new HashMap<>();
+
+    public EntityResolver(ShortTypeNameIdResolver shortTypeNameIdResolver) {
+        this.shortTypeNameIdResolver = shortTypeNameIdResolver;
+    }
+
     public void bindItem(String id, BaseEntity entity) {
         if(!items.containsKey(id)) {
             items.put(id, entity);
@@ -31,7 +35,7 @@ public class EntityResolver {
             if (entity == null) {
                 //todo proxy clasess need to be cached
                 String idComponents[] = (id).split("/");
-                Class baseClass = shortNameIdResolver.typeFromId(null, idComponents[0]).getRawClass();
+                Class baseClass = shortTypeNameIdResolver.classFromId(idComponents[0]);
                 ProxyFactory proxyFactory = new ProxyFactory();
                 proxyFactory.setSuperclass(baseClass);
                 proxyFactory.setInterfaces(new Class[]{EntityReference.class, HibernateProxy.class});

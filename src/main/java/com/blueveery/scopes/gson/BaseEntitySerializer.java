@@ -15,19 +15,17 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-public class BaseEntitySerializer implements JsonSerializer<BaseEntity>, ScopeEvaluator {
-    private JsonScope jsonScope;
-    private ReflectionUtil reflectionUtil;
-    private ThreadLocal<Set<BaseEntity>> serializationSetThreadLocal = new ThreadLocal<>();
+public class BaseEntitySerializer extends BaseEntityTypeAdapter implements JsonSerializer<BaseEntity>, ScopeEvaluator {
+    private static ThreadLocal<Set<BaseEntity>> serializationSetThreadLocal = new ThreadLocal<>();
 
-    public BaseEntitySerializer(JsonScope jsonScope, ReflectionUtil reflectionUtil) {
-        this.jsonScope = jsonScope;
-        this.reflectionUtil = reflectionUtil;
+    public BaseEntitySerializer(ReflectionUtil reflectionUtil) {
+        super(reflectionUtil);
     }
 
     @Override
     public JsonElement serialize(BaseEntity entity, Type type, JsonSerializationContext context) {
 
+        JsonScope jsonScope = jsonScopeThreadLocal.get();
         boolean serializationSetCreated = false;
         Set<BaseEntity> serializationSet = serializationSetThreadLocal.get();
         if(serializationSet==null){

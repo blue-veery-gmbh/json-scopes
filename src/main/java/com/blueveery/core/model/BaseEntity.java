@@ -1,6 +1,6 @@
 package com.blueveery.core.model;
 
-import com.blueveery.scopes.jackson.ShortNameIdResolver;
+import com.blueveery.scopes.jackson.ShortTypeNameIdResolverJackson;
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
 
@@ -12,7 +12,7 @@ import java.util.UUID;
  * Created by tomek on 08.09.16.
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME,include = JsonTypeInfo.As.EXISTING_PROPERTY,property = "id", visible = true)
-@JsonTypeIdResolver(ShortNameIdResolver.class)
+@JsonTypeIdResolver(ShortTypeNameIdResolverJackson.class)
 
 @JsonIgnoreProperties({"handler", "hibernateLazyInitializer"})
 @MappedSuperclass
