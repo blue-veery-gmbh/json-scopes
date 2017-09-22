@@ -18,6 +18,11 @@ public class ScopedGsonHttpMessageConverter extends GsonHttpMessageConverter {
     }
 
     @Override
+    public Object read(Type type, Class<?> contextClass, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
+        return super.read(type, contextClass, inputMessage);
+    }
+
+    @Override
     protected void writeInternal(Object o, Type type, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
         getGson().getAdapter(BaseEntity.class);
         super.writeInternal(o, type, outputMessage);
