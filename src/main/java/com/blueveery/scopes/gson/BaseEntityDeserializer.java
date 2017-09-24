@@ -2,22 +2,23 @@ package com.blueveery.scopes.gson;
 
 import com.blueveery.core.model.BaseEntity;
 import com.blueveery.scopes.EntityResolver;
+import com.blueveery.scopes.ProxyInstanceFactory;
 import com.blueveery.scopes.ShortTypeNameIdResolver;
 import com.google.gson.*;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.HashSet;
-import java.util.Set;
 
 public class BaseEntityDeserializer extends BaseEntityTypeAdapter implements JsonDeserializer<BaseEntity> {
     private ShortTypeNameIdResolver shortTypeNameIdResolver;
+    private ProxyInstanceFactory proxyInstanceFactory;
     private ThreadLocal<EntityResolver> entityResolverThreadLocal = new ThreadLocal<>();
 
-    public BaseEntityDeserializer(ReflectionUtil reflectionUtil, ShortTypeNameIdResolver shortTypeNameIdResolver) {
+    public BaseEntityDeserializer(ReflectionUtil reflectionUtil, ShortTypeNameIdResolver shortTypeNameIdResolver, ProxyInstanceFactory proxyInstanceFactory) {
         super(reflectionUtil);
         this.shortTypeNameIdResolver = shortTypeNameIdResolver;
+        this.proxyInstanceFactory = proxyInstanceFactory;
     }
 
     @Override
@@ -27,7 +28,7 @@ public class BaseEntityDeserializer extends BaseEntityTypeAdapter implements Jso
         EntityResolver entityResolver = entityResolverThreadLocal.get();
         if(entityResolver==null){
             entityResolverCreated = true;
-            entityResolver = new EntityResolver(new ShortTypeNameIdResolver());
+            entityResolver = new EntityResolver(new ShortTypeNameIdResolver(), proxyInstanceFactory);
             entityResolverThreadLocal.set(entityResolver);
         }
         try {

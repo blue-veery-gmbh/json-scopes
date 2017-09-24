@@ -4,6 +4,8 @@ import com.blueveery.scopes.jackson.ShortTypeNameIdResolverJackson;
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import java.util.UUID;

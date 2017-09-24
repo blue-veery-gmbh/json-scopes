@@ -10,7 +10,7 @@ import java.io.Serializable;
 /**
  * Created by tomek on 30.09.16.
  */
-public class ScopesLazyInitializer implements LazyInitializer {
+class ScopesLazyInitializer implements LazyInitializer {
     private BaseEntity baseEntity;
 
     public ScopesLazyInitializer(BaseEntity baseEntity) {

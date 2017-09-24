@@ -2,6 +2,7 @@ package com.blueveery.scopes.jackson.spring;
 
 import com.blueveery.scopes.EntityResolver;
 import com.blueveery.scopes.JsonScope;
+import com.blueveery.scopes.ProxyInstanceFactory;
 import com.blueveery.scopes.ShortTypeNameIdResolver;
 import com.blueveery.scopes.jackson.PublicTreeTraversingParser;
 import com.fasterxml.jackson.core.JsonEncoding;
@@ -30,6 +31,12 @@ import java.lang.reflect.Type;
  */
 public class ScopedJackson2HttpMessageConverter extends MappingJackson2HttpMessageConverter {
 
+    private ProxyInstanceFactory proxyInstanceFactory;
+
+    public ScopedJackson2HttpMessageConverter(ProxyInstanceFactory proxyInstanceFactory) {
+        this.proxyInstanceFactory = proxyInstanceFactory;
+    }
+
     @Override
     public Object read(Type type, Class<?> contextClass, HttpInputMessage inputMessage)
             throws IOException, HttpMessageNotReadableException {
@@ -54,7 +61,7 @@ public class ScopedJackson2HttpMessageConverter extends MappingJackson2HttpMessa
             PublicTreeTraversingParser jsonParser = new PublicTreeTraversingParser(rootNode);
             contxtAttributes = contxtAttributes.withPerCallAttribute("parser", jsonParser);
             objectReader = objectReader.with(contxtAttributes);
-            contxtAttributes = contxtAttributes.withPerCallAttribute("entityResolver", new EntityResolver(new ShortTypeNameIdResolver()));
+            contxtAttributes = contxtAttributes.withPerCallAttribute("entityResolver", new EntityResolver(new ShortTypeNameIdResolver(), proxyInstanceFactory));
             objectReader = objectReader.with(contxtAttributes);
 
             return objectReader.forType(javaType).readValue(jsonParser);

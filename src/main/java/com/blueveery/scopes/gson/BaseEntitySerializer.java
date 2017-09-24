@@ -1,6 +1,7 @@
 package com.blueveery.scopes.gson;
 
 import com.blueveery.core.model.BaseEntity;
+import com.blueveery.scopes.JPASpecificOperations;
 import com.blueveery.scopes.JsonScope;
 import com.blueveery.scopes.ScopeEvaluator;
 import com.google.gson.JsonElement;
@@ -17,9 +18,11 @@ import java.util.Set;
 
 public class BaseEntitySerializer extends BaseEntityTypeAdapter implements JsonSerializer<BaseEntity>, ScopeEvaluator {
     private static ThreadLocal<Set<BaseEntity>> serializationSetThreadLocal = new ThreadLocal<>();
+    private JPASpecificOperations jpaSpecificOperations;
 
-    public BaseEntitySerializer(ReflectionUtil reflectionUtil) {
+    public BaseEntitySerializer(ReflectionUtil reflectionUtil, JPASpecificOperations jpaSpecificOperations) {
         super(reflectionUtil);
+        this.jpaSpecificOperations = jpaSpecificOperations;
     }
 
     @Override
@@ -40,6 +43,7 @@ public class BaseEntitySerializer extends BaseEntityTypeAdapter implements JsonS
             jsonObject = new JsonObject();
 
             if(!serializationSet.contains(entity) && isInScope) {
+                entity = jpaSpecificOperations.unproxy(entity);
                 serializationSet.add(entity);
                     jsonObject.add("id", context.serialize(entity.getJsonId()));
                     for (Field field : reflectionUtil.getDeclaredFields(entity)) {

@@ -10,7 +10,7 @@ import java.lang.reflect.Method;
 /**
  * Created by tomek on 30.09.16.
  */
-public class HibernateLazyMethodHandler implements MethodHandler {
+class HibernateLazyMethodHandler implements MethodHandler {
 
 
     @Override
