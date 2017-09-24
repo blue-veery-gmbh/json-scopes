@@ -43,7 +43,8 @@ public class BaseEntitySerializer extends StdSerializer<BaseEntity> implements S
             typeSer.getTypeIdResolver().idFromValue(value);//todo remove it when typeid reslover will be filed with data
             jsonGenerator.writeStartObject();
             jsonGenerator.writeFieldName("id");
-            jsonGenerator.writeObject(value.getJsonId());
+            String typeName = typeSer.getTypeIdResolver().idFromValue(value);
+            jsonGenerator.writeObject(typeName + "/" + value.getId());
             jsonGenerator.writeEndObject();
         }
     }

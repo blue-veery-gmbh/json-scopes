@@ -53,7 +53,8 @@ public class BaseEntityDeserializer extends StdDeserializer<BaseEntity> implemen
         }
 
         BaseEntity baseEntity = (BaseEntity) defaultDeserializer.deserializeWithType(jsonParser, context, typeDeserializer);
-        entityResolver.bindItem(baseEntity.getJsonId(), baseEntity);
+        String typeName = typeDeserializer.getTypeIdResolver().idFromValue(baseEntity);
+        entityResolver.bindItem(typeName + "/" + baseEntity.getId(), baseEntity);
         return baseEntity;
     }
 

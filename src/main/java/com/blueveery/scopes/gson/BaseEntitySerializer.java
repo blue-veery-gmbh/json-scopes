@@ -44,22 +44,23 @@ public class BaseEntitySerializer extends BaseEntityTypeAdapter implements JsonS
         try {
             boolean isInScope = isInScope(entity, jsonScope, serializationSet);
             jsonObject = new JsonObject();
+            String typeName = typeNameResolver.idFromValue(entity);
 
             if(!serializationSet.contains(entity) && isInScope) {
                 entity = jpaSpecificOperations.unproxy(entity);
                 serializationSet.add(entity);
-                    jsonObject.add("id", context.serialize(entity.getJsonId()));
-                    for (Field field : reflectionUtil.getDeclaredFields(entity)) {
-                        Object fieldValue = field.get(entity);
-                        if(field.getGenericType() instanceof ParameterizedType){
-                            ParameterizedType parameterizedType = (ParameterizedType) field.getGenericType();
-                            jsonObject.add(field.getName(), context.serialize(fieldValue, parameterizedType));
-                        }else {
-                            jsonObject.add(field.getName(), context.serialize(fieldValue));
-                        }
+                jsonObject.add("id", context.serialize(typeName + "/" + entity.getId()));
+                for (Field field : reflectionUtil.getDeclaredFields(entity)) {
+                    Object fieldValue = field.get(entity);
+                    if(field.getGenericType() instanceof ParameterizedType){
+                        ParameterizedType parameterizedType = (ParameterizedType) field.getGenericType();
+                        jsonObject.add(field.getName(), context.serialize(fieldValue, parameterizedType));
+                    }else {
+                        jsonObject.add(field.getName(), context.serialize(fieldValue));
                     }
+                }
             }else{
-                jsonObject.addProperty("ref", entity.getJsonId());
+                jsonObject.addProperty("ref", typeName + "/" + entity.getId());
             }
         } catch (IllegalAccessException e) {
             throw new IllegalStateException(e);

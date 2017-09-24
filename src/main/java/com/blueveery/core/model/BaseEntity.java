@@ -37,11 +37,6 @@ public class BaseEntity {
         this.id = id;
     }
 
-    @JsonProperty("id")
-    public String getJsonId() {
-        return getClass().getSimpleName().toLowerCase() + "/" + id;
-    }
-
     public void setJsonId(String jsonId) {
         String[] idComponents = jsonId.toString().split("/");
         id = UUID.fromString(idComponents[1]);
