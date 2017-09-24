@@ -13,7 +13,7 @@ public class ProxyInstanceFactory {
 
     public BaseEntity createProxyInstance(Class baseClass) throws IllegalAccessException, InstantiationException {
         ProxyFactory proxyFactory = new ProxyFactory();
-        //todo cach proxy classes
+        //todo cache proxy classes
         proxyFactory.setSuperclass(baseClass);
         proxyFactory.setInterfaces(jpaSpecificOperations.getProxyClassInterfaces());
         Class proxyClass = proxyFactory.createClass();
