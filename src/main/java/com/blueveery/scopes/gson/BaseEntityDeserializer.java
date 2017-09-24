@@ -3,7 +3,7 @@ package com.blueveery.scopes.gson;
 import com.blueveery.core.model.BaseEntity;
 import com.blueveery.scopes.EntityResolver;
 import com.blueveery.scopes.ProxyInstanceFactory;
-import com.blueveery.scopes.ShortTypeNameIdResolver;
+import com.blueveery.scopes.TypeNameResolver;
 import com.google.gson.*;
 
 import java.lang.reflect.Field;
@@ -11,13 +11,13 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 public class BaseEntityDeserializer extends BaseEntityTypeAdapter implements JsonDeserializer<BaseEntity> {
-    private ShortTypeNameIdResolver shortTypeNameIdResolver;
+    private TypeNameResolver typeNameResolver;
     private ProxyInstanceFactory proxyInstanceFactory;
     private ThreadLocal<EntityResolver> entityResolverThreadLocal = new ThreadLocal<>();
 
-    public BaseEntityDeserializer(ReflectionUtil reflectionUtil, ShortTypeNameIdResolver shortTypeNameIdResolver, ProxyInstanceFactory proxyInstanceFactory) {
+    public BaseEntityDeserializer(ReflectionUtil reflectionUtil, TypeNameResolver typeNameResolver, ProxyInstanceFactory proxyInstanceFactory) {
         super(reflectionUtil);
-        this.shortTypeNameIdResolver = shortTypeNameIdResolver;
+        this.typeNameResolver = typeNameResolver;
         this.proxyInstanceFactory = proxyInstanceFactory;
     }
 
@@ -28,7 +28,7 @@ public class BaseEntityDeserializer extends BaseEntityTypeAdapter implements Jso
         EntityResolver entityResolver = entityResolverThreadLocal.get();
         if(entityResolver==null){
             entityResolverCreated = true;
-            entityResolver = new EntityResolver(new ShortTypeNameIdResolver(), proxyInstanceFactory);
+            entityResolver = new EntityResolver(typeNameResolver, proxyInstanceFactory);
             entityResolverThreadLocal.set(entityResolver);
         }
         try {
@@ -40,7 +40,7 @@ public class BaseEntityDeserializer extends BaseEntityTypeAdapter implements Jso
             }
 
             String id = jsonObject.get("id").getAsString();
-            Class clazz = shortTypeNameIdResolver.classFromId(id);
+            Class clazz = typeNameResolver.classFromId(id);
 
             BaseEntity entity = (BaseEntity) clazz.newInstance();
             entity.setJsonId(id);

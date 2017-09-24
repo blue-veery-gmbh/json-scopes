@@ -9,11 +9,11 @@ import java.util.Map;
  */
 public class EntityResolver {
     private ProxyInstanceFactory proxyInstanceFactory;
-    private ShortTypeNameIdResolver shortTypeNameIdResolver;
+    private TypeNameResolver typeNameResolver;
     private Map<String, BaseEntity> items = new HashMap<>();
 
-    public EntityResolver(ShortTypeNameIdResolver shortTypeNameIdResolver, ProxyInstanceFactory proxyInstanceFactory) {
-        this.shortTypeNameIdResolver = shortTypeNameIdResolver;
+    public EntityResolver(TypeNameResolver typeNameResolver, ProxyInstanceFactory proxyInstanceFactory) {
+        this.typeNameResolver = typeNameResolver;
         this.proxyInstanceFactory = proxyInstanceFactory;
     }
 
@@ -31,7 +31,7 @@ public class EntityResolver {
             BaseEntity entity = items.get(id);
             if (entity == null) {
                 String idComponents[] = (id).split("/");
-                Class baseClass = shortTypeNameIdResolver.classFromId(idComponents[0]);
+                Class baseClass = typeNameResolver.classFromId(idComponents[0]);
                 entity = proxyInstanceFactory.createProxyInstance(baseClass);
                 entity.setJsonId(id);
                 bindItem(id, entity);

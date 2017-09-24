@@ -4,6 +4,7 @@ import com.blueveery.core.model.BaseEntity;
 import com.blueveery.scopes.JPASpecificOperations;
 import com.blueveery.scopes.JsonScope;
 import com.blueveery.scopes.ScopeEvaluator;
+import com.blueveery.scopes.TypeNameResolver;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
@@ -18,10 +19,12 @@ import java.util.Set;
 
 public class BaseEntitySerializer extends BaseEntityTypeAdapter implements JsonSerializer<BaseEntity>, ScopeEvaluator {
     private static ThreadLocal<Set<BaseEntity>> serializationSetThreadLocal = new ThreadLocal<>();
+    private TypeNameResolver typeNameResolver;
     private JPASpecificOperations jpaSpecificOperations;
 
-    public BaseEntitySerializer(ReflectionUtil reflectionUtil, JPASpecificOperations jpaSpecificOperations) {
+    public BaseEntitySerializer(ReflectionUtil reflectionUtil, TypeNameResolver typeNameResolver, JPASpecificOperations jpaSpecificOperations) {
         super(reflectionUtil);
+        this.typeNameResolver = typeNameResolver;
         this.jpaSpecificOperations = jpaSpecificOperations;
     }
 
