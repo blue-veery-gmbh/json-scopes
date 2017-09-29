@@ -41,4 +41,18 @@ public class BaseEntity {
         String[] idComponents = jsonId.toString().split("/");
         id = UUID.fromString(idComponents[1]);
     }
+
+    @Override
+    public boolean equals(Object object) {
+        if(object instanceof BaseEntity){
+            BaseEntity otherBaseEntity = (BaseEntity) object;
+            return id.equals(otherBaseEntity.id);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
 }
