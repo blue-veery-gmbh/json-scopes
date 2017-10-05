@@ -32,7 +32,7 @@ public class EntityResolver {
             if (entity == null) {
                 String idComponents[] = (id).split("/");
                 Class baseClass = typeNameResolver.classFromId(idComponents[0]);
-                entity = proxyInstanceFactory.createProxyInstance(baseClass);
+                entity = (BaseEntity) proxyInstanceFactory.createProxyInstance(baseClass);
                 entity.setJsonId(id);
                 bindItem(id, entity);
             }

@@ -11,14 +11,14 @@ public class ProxyInstanceFactory {
         this.jpaSpecificOperations = jpaSpecificOperations;
     }
 
-    public BaseEntity createProxyInstance(Class baseClass) throws IllegalAccessException, InstantiationException {
+    public ProxyObject createProxyInstance(Class baseClass) throws IllegalAccessException, InstantiationException {
         ProxyFactory proxyFactory = new ProxyFactory();
         //todo cache proxy classes
         proxyFactory.setSuperclass(baseClass);
         proxyFactory.setInterfaces(jpaSpecificOperations.getProxyClassInterfaces());
         Class proxyClass = proxyFactory.createClass();
-        BaseEntity entity = (BaseEntity) proxyClass.newInstance();
-        ((ProxyObject)entity).setHandler(jpaSpecificOperations.createTerminatingProxyHandler());
-        return entity;
+        ProxyObject proxyObject = (ProxyObject) proxyClass.newInstance();
+        proxyObject.setHandler(jpaSpecificOperations.createTerminatingProxyHandler());
+        return proxyObject;
     }
 }

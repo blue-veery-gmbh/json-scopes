@@ -9,6 +9,7 @@ import com.google.gson.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Collection;
 
 public class BaseEntityDeserializer extends BaseEntityTypeAdapter implements JsonDeserializer<BaseEntity> {
     private TypeNameResolver typeNameResolver;
@@ -47,6 +48,11 @@ public class BaseEntityDeserializer extends BaseEntityTypeAdapter implements Jso
             entityResolver.bindItem(id, entity);
 
             for (Field field : reflectionUtil.getDeclaredFields(entity)) {
+                if(Collection.class.isAssignableFrom(field.getType()) && jsonObject.get(field.getName()) == null) {
+                    field.set(entity, proxyInstanceFactory.createProxyInstance(field.getType()));
+                    break;
+                }
+
                 if(field.getGenericType() instanceof ParameterizedType){
                     ParameterizedType parameterizedType = (ParameterizedType) field.getGenericType();
                     field.set(entity, context.deserialize(jsonObject.get(field.getName()), parameterizedType));

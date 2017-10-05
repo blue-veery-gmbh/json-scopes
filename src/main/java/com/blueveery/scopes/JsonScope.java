@@ -14,4 +14,5 @@ import java.lang.annotation.Target;
 public @interface JsonScope {
     boolean positive();
     Class<?>[] scope() default { };
+    boolean lazyLoadBorders() default false;
 }
