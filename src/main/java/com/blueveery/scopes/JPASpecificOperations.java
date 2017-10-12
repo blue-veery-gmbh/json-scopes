@@ -3,6 +3,9 @@ package com.blueveery.scopes;
 import com.blueveery.core.model.BaseEntity;
 import javassist.util.proxy.MethodHandler;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 public interface JPASpecificOperations {
@@ -11,4 +14,8 @@ public interface JPASpecificOperations {
     boolean valueIsLoaded(Object fieldValue);
     UUID getEntityId(BaseEntity entity);
     Class[] getProxyClassInterfaces();
+
+    List createListProxyInstance();
+    Set createSetProxyInstance();
+    Map createMapProxyInstance();
 }

@@ -4,9 +4,13 @@ import com.blueveery.core.model.BaseEntity;
 import com.blueveery.scopes.EntityReference;
 import com.blueveery.scopes.JPASpecificOperations;
 import javassist.util.proxy.MethodHandler;
+import org.hibernate.collection.internal.PersistentBag;
+import org.hibernate.collection.internal.PersistentMap;
+import org.hibernate.collection.internal.PersistentSet;
+import org.hibernate.collection.spi.PersistentCollection;
 import org.hibernate.proxy.HibernateProxy;
 
-import java.util.UUID;
+import java.util.*;
 
 public class JPASpecificOperationsHibernateImpl implements JPASpecificOperations{
 
@@ -31,6 +35,9 @@ public class JPASpecificOperationsHibernateImpl implements JPASpecificOperations
             HibernateProxy hibernateProxy = (HibernateProxy) fieldValue;
             return !hibernateProxy.getHibernateLazyInitializer().isUninitialized();
         }
+        if(fieldValue instanceof PersistentCollection){
+            return ((PersistentCollection)fieldValue).wasInitialized();
+        }
         return true;
     }
 
@@ -49,4 +56,18 @@ public class JPASpecificOperationsHibernateImpl implements JPASpecificOperations
         return proxyClassInterfaces;
     }
 
+    @Override
+    public List createListProxyInstance() {
+        return new PersistentBag();
+    }
+
+    @Override
+    public Set createSetProxyInstance() {
+        return new PersistentSet();
+    }
+
+    @Override
+    public Map createMapProxyInstance() {
+        return new PersistentMap();
+    }
 }

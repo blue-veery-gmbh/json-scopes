@@ -49,8 +49,8 @@ public class BaseEntitySerializer extends BaseEntityTypeAdapter implements JsonS
             String typeName = typeNameResolver.idFromValue(entity);
 
             boolean serializeEntityBasedOnLazyLoad = true;
-            boolean lazyLoadBerdersAreEffective = jsonScope != null && jsonScope.lazyLoadBorders();
-            if(lazyLoadBerdersAreEffective){
+            boolean lazyLoadBordersAreEffective = jsonScope != null && jsonScope.lazyLoadBorders();
+            if(lazyLoadBordersAreEffective){
                 serializeEntityBasedOnLazyLoad = jpaSpecificOperations.valueIsLoaded(entity);
             }
 
@@ -61,9 +61,9 @@ public class BaseEntitySerializer extends BaseEntityTypeAdapter implements JsonS
                 jsonObject.add("id", context.serialize(typeName + "/" + entity.getId()));
                 for (Field field : reflectionUtil.getDeclaredFields(entity)) {
                     Object fieldValue = field.get(entity);
-                    if(Collection.class.isAssignableFrom(field.getType()) && lazyLoadBerdersAreEffective && !jpaSpecificOperations.valueIsLoaded(fieldValue)){
+                    if(Collection.class.isAssignableFrom(field.getType()) && lazyLoadBordersAreEffective && !jpaSpecificOperations.valueIsLoaded(fieldValue)){
                         jsonObject.add(field.getName(), null);
-                        break;
+                        continue;
                     }
 
                     if(field.getGenericType() instanceof ParameterizedType){

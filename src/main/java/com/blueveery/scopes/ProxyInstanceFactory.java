@@ -4,6 +4,10 @@ import com.blueveery.core.model.BaseEntity;
 import javassist.util.proxy.ProxyFactory;
 import javassist.util.proxy.ProxyObject;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 public class ProxyInstanceFactory {
     private JPASpecificOperations jpaSpecificOperations;
 
@@ -20,5 +24,17 @@ public class ProxyInstanceFactory {
         ProxyObject proxyObject = (ProxyObject) proxyClass.newInstance();
         proxyObject.setHandler(jpaSpecificOperations.createTerminatingProxyHandler());
         return proxyObject;
+    }
+
+    public List createListProxyInstance() {
+        return jpaSpecificOperations.createListProxyInstance();
+    }
+
+    public Set createSetProxyInstance() {
+        return jpaSpecificOperations.createSetProxyInstance();
+    }
+
+    public Map createMapProxyInstance() {
+        return jpaSpecificOperations.createMapProxyInstance();
     }
 }

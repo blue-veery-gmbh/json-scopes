@@ -9,7 +9,9 @@ import com.google.gson.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class BaseEntityDeserializer extends BaseEntityTypeAdapter implements JsonDeserializer<BaseEntity> {
     private TypeNameResolver typeNameResolver;
@@ -48,9 +50,19 @@ public class BaseEntityDeserializer extends BaseEntityTypeAdapter implements Jso
             entityResolver.bindItem(id, entity);
 
             for (Field field : reflectionUtil.getDeclaredFields(entity)) {
-                if(Collection.class.isAssignableFrom(field.getType()) && jsonObject.get(field.getName()) == null) {
-                    field.set(entity, proxyInstanceFactory.createProxyInstance(field.getType()));
-                    break;
+                if((List.class.isAssignableFrom(field.getType())) && jsonObject.get(field.getName()) == JsonNull.INSTANCE) {
+                    field.set(entity, proxyInstanceFactory.createListProxyInstance());
+                    continue;
+                }
+
+                if((Set.class.isAssignableFrom(field.getType())) && jsonObject.get(field.getName()) == JsonNull.INSTANCE) {
+                    field.set(entity, proxyInstanceFactory.createSetProxyInstance());
+                    continue;
+                }
+
+                if((Map.class.isAssignableFrom(field.getType())) && jsonObject.get(field.getName()) == JsonNull.INSTANCE) {
+                    field.set(entity, proxyInstanceFactory.createMapProxyInstance());
+                    continue;
                 }
 
                 if(field.getGenericType() instanceof ParameterizedType){
