@@ -6,6 +6,7 @@ import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ConfigurationBuilder;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -15,7 +16,11 @@ public class ShortTypeNameIdResolver implements TypeNameResolver {
 
     @Override
     public String idFromClass(Class clazz) {
-        String typeId = clazz.getSimpleName().toLowerCase();
+        String typeId = clazz.getSimpleName();
+        String[] nameComponents = typeId.split("(?<=.)(?=\\p{Lu})");
+        typeId = String.join("-", nameComponents);
+        typeId = typeId.toLowerCase();
+
         if(!typeIdToClassMap.containsKey(typeId)){
 
             typeIdToClassMap.put(typeId, clazz);

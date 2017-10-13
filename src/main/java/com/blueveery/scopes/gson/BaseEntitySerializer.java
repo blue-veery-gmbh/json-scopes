@@ -13,10 +13,7 @@ import com.google.gson.JsonSerializer;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 
 public class BaseEntitySerializer extends BaseEntityTypeAdapter implements JsonSerializer<BaseEntity>, ScopeEvaluator {
@@ -62,6 +59,11 @@ public class BaseEntitySerializer extends BaseEntityTypeAdapter implements JsonS
                 for (Field field : reflectionUtil.getDeclaredFields(entity)) {
                     Object fieldValue = field.get(entity);
                     if(Collection.class.isAssignableFrom(field.getType()) && lazyLoadBordersAreEffective && !jpaSpecificOperations.valueIsLoaded(fieldValue)){
+                        jsonObject.add(field.getName(), null);
+                        continue;
+                    }
+
+                    if(Map.class.isAssignableFrom(field.getType()) && lazyLoadBordersAreEffective && !jpaSpecificOperations.valueIsLoaded(fieldValue)){
                         jsonObject.add(field.getName(), null);
                         continue;
                     }
