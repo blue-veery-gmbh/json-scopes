@@ -37,9 +37,9 @@ public class BaseEntityDeserializer extends BaseEntityTypeAdapter implements Jso
         try {
             JsonObject jsonObject = jsonElement.getAsJsonObject();
 
-            if (jsonObject.size() == 1 && jsonObject.has("ref")) {
-                String ref = jsonObject.get("ref").getAsString();
-                return entityResolver.resolveId(ref);
+            if (jsonObject.size() == 1 && jsonObject.has("id")) {
+                String id = jsonObject.get("id").getAsString();
+                return entityResolver.resolveId(id);
             }
 
             String id = jsonObject.get("id").getAsString();

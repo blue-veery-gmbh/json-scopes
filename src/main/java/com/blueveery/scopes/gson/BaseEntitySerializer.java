@@ -77,7 +77,7 @@ public class BaseEntitySerializer extends BaseEntityTypeAdapter implements JsonS
                 }
             }else{
                 UUID entityId = jpaSpecificOperations.getEntityId(entity);
-                jsonObject.addProperty("ref", typeName + "/" + entityId);
+                jsonObject.addProperty("id", typeName + "/" + entityId);
             }
         } catch (IllegalAccessException e) {
             throw new IllegalStateException(e);
