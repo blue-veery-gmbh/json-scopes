@@ -43,8 +43,6 @@ public class BaseEntitySerializer extends BaseEntityTypeAdapter implements JsonS
         try {
             boolean isInScope = isInScope(entity, jsonScope, serializationSet);
             jsonObject = new JsonObject();
-            entity = jpaSpecificOperations.unproxy(entity);
-            String typeName = typeNameResolver.idFromValue(entity);
 
             boolean serializeEntityBasedOnLazyLoad = true;
             boolean lazyLoadBordersAreEffective = jsonScope != null && jsonScope.lazyLoadBorders();
@@ -54,6 +52,8 @@ public class BaseEntitySerializer extends BaseEntityTypeAdapter implements JsonS
 
 
             if(serializeEntityBasedOnLazyLoad && !serializationSet.contains(entity) && isInScope) {
+                entity = jpaSpecificOperations.unproxy(entity);
+                String typeName = typeNameResolver.idFromValue(entity);
                 serializationSet.add(entity);
                 jsonObject.add("id", context.serialize(typeName + "/" + entity.getId()));
                 for (Field field : reflectionUtil.getDeclaredFields(entity)) {
@@ -77,6 +77,7 @@ public class BaseEntitySerializer extends BaseEntityTypeAdapter implements JsonS
                 }
             }else{
                 UUID entityId = jpaSpecificOperations.getEntityId(entity);
+                String typeName = typeNameResolver.idFromValue(entity);
                 jsonObject.addProperty("id", typeName + "/" + entityId);
             }
         } catch (IllegalAccessException e) {
