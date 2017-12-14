@@ -49,7 +49,7 @@ class ScopesLazyInitializer implements LazyInitializer {
 
     @Override
     public Object getImplementation() {
-        throw new UnsupportedOperationException();
+        return baseEntity;
     }
 
     @Override
@@ -58,8 +58,8 @@ class ScopesLazyInitializer implements LazyInitializer {
     }
 
     @Override
-    public void setImplementation(Object o) {
-        throw new UnsupportedOperationException();
+    public void setImplementation(Object object) {
+        baseEntity = (BaseEntity) object;
     }
 
     @Override
