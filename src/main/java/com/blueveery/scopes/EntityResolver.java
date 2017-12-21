@@ -1,6 +1,7 @@
 package com.blueveery.scopes;
 
 import com.blueveery.core.model.BaseEntity;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,10 +19,10 @@ public class EntityResolver {
     }
 
     public void bindItem(String id, BaseEntity entity) {
-        if(!items.containsKey(id)) {
+        if (!items.containsKey(id)) {
             items.put(id, entity);
-        }else{
-            throw new IllegalStateException("id is already bound");
+        } else {
+            throw new IllegalStateException(String.format("Id %s is already bound", id));
         }
 
     }
@@ -37,7 +38,7 @@ public class EntityResolver {
                 bindItem(id, entity);
             }
             return entity;
-        }catch(Exception e){
+        } catch (Exception e) {
             throw new IllegalStateException(e);
         }
     }
