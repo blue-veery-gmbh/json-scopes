@@ -70,4 +70,10 @@ public class JPASpecificOperationsHibernateImpl implements JPASpecificOperations
     public Map createMapProxyInstance() {
         return new PersistentMap();
     }
+
+    @Override
+    public void initProxyWithEntity(BaseEntity proxy, BaseEntity entity) {
+        HibernateProxy hibernateProxy = (HibernateProxy) proxy;
+        hibernateProxy.getHibernateLazyInitializer().setImplementation(entity);
+    }
 }

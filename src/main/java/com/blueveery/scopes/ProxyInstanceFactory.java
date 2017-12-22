@@ -26,6 +26,10 @@ public class ProxyInstanceFactory {
         return proxyObject;
     }
 
+    public void initProxyWithEntity(BaseEntity proxy, BaseEntity entity){
+        jpaSpecificOperations.initProxyWithEntity(proxy, entity);
+    }
+
     public List createListProxyInstance() {
         return jpaSpecificOperations.createListProxyInstance();
     }

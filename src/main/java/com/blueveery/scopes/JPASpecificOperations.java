@@ -18,4 +18,6 @@ public interface JPASpecificOperations {
     List createListProxyInstance();
     Set createSetProxyInstance();
     Map createMapProxyInstance();
+
+    void initProxyWithEntity(BaseEntity proxy, BaseEntity entity);
 }

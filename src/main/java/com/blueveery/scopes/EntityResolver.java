@@ -1,6 +1,7 @@
 package com.blueveery.scopes;
 
 import com.blueveery.core.model.BaseEntity;
+import javassist.util.proxy.ProxyObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,10 +20,16 @@ public class EntityResolver {
     }
 
     public void bindItem(String id, BaseEntity entity) {
-        if (!items.containsKey(id)) {
+        BaseEntity previousBaseEntity = items.get(id);
+        if (previousBaseEntity == null) {
             items.put(id, entity);
         } else {
-            throw new IllegalStateException(String.format("Id %s is already bound", id));
+            if(previousBaseEntity instanceof ProxyObject){
+                proxyInstanceFactory.initProxyWithEntity(previousBaseEntity, entity);
+                items.put(id, entity);
+            }else {
+                throw new IllegalStateException(String.format("Id %s is already bound", id));
+            }
         }
 
     }
