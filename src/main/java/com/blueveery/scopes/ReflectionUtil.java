@@ -1,4 +1,4 @@
-package com.blueveery.scopes.gson;
+package com.blueveery.scopes;
 
 import com.blueveery.core.model.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;

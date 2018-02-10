@@ -1,10 +1,7 @@
 package com.blueveery.scopes.gson;
 
 import com.blueveery.core.model.BaseEntity;
-import com.blueveery.scopes.JPASpecificOperations;
-import com.blueveery.scopes.JsonScope;
-import com.blueveery.scopes.ScopeEvaluator;
-import com.blueveery.scopes.TypeNameResolver;
+import com.blueveery.scopes.*;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;

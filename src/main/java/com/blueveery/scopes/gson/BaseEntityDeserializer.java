@@ -3,6 +3,7 @@ package com.blueveery.scopes.gson;
 import com.blueveery.core.model.BaseEntity;
 import com.blueveery.scopes.EntityResolver;
 import com.blueveery.scopes.ProxyInstanceFactory;
+import com.blueveery.scopes.ReflectionUtil;
 import com.blueveery.scopes.TypeNameResolver;
 import com.google.gson.*;
 
