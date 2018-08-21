@@ -1,20 +1,19 @@
 package com.blueveery.scopes.gson;
 
 import com.blueveery.core.model.BaseEntity;
-import com.blueveery.scopes.EntityResolver;
-import com.blueveery.scopes.ProxyInstanceFactory;
-import com.blueveery.scopes.ReflectionUtil;
-import com.blueveery.scopes.TypeNameResolver;
+import com.blueveery.scopes.*;
 import com.google.gson.*;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class BaseEntityDeserializer extends BaseEntityTypeAdapter implements JsonDeserializer<BaseEntity> {
+public class BaseEntityDeserializer extends BaseEntityTypeAdapter implements JsonDeserializer<BaseEntity>, ScopeEvaluator {
+    private static ThreadLocal<Set<BaseEntity>> serializationSetThreadLocal = new ThreadLocal<>();
     private TypeNameResolver typeNameResolver;
     private ProxyInstanceFactory proxyInstanceFactory;
     private ThreadLocal<EntityResolver> entityResolverThreadLocal = new ThreadLocal<>();
@@ -27,10 +26,18 @@ public class BaseEntityDeserializer extends BaseEntityTypeAdapter implements Jso
 
     @Override
     public BaseEntity deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context) throws JsonParseException {
+        JsonScope jsonScope = jsonScopeThreadLocal.get();
+        boolean serializationSetCreated = false;
+        Set<BaseEntity> serializationSet = serializationSetThreadLocal.get();
+        if (serializationSet == null) {
+            serializationSetCreated = true;
+            serializationSet = new HashSet<>();
+            serializationSetThreadLocal.set(serializationSet);
+        }
 
         boolean entityResolverCreated = false;
         EntityResolver entityResolver = entityResolverThreadLocal.get();
-        if(entityResolver==null){
+        if (entityResolver == null) {
             entityResolverCreated = true;
             entityResolver = new EntityResolver(typeNameResolver, proxyInstanceFactory);
             entityResolverThreadLocal.set(entityResolver);
@@ -50,26 +57,33 @@ public class BaseEntityDeserializer extends BaseEntityTypeAdapter implements Jso
             entity.setJsonId(id);
             entityResolver.bindItem(id, entity);
 
+            boolean isInScope = isInScope(entity, jsonScope, serializationSet);
+            if (!isInScope) {
+                return entityResolver.resolveId(id);
+            }
+
+            serializationSet.add(entity);
+
             for (Field field : reflectionUtil.getDeclaredFields(entity)) {
-                if((List.class.isAssignableFrom(field.getType())) && jsonObject.get(field.getName()) == JsonNull.INSTANCE) {
+                if ((List.class.isAssignableFrom(field.getType())) && jsonObject.get(field.getName()) == JsonNull.INSTANCE) {
                     field.set(entity, proxyInstanceFactory.createListProxyInstance());
                     continue;
                 }
 
-                if((Set.class.isAssignableFrom(field.getType())) && jsonObject.get(field.getName()) == JsonNull.INSTANCE) {
+                if ((Set.class.isAssignableFrom(field.getType())) && jsonObject.get(field.getName()) == JsonNull.INSTANCE) {
                     field.set(entity, proxyInstanceFactory.createSetProxyInstance());
                     continue;
                 }
 
-                if((Map.class.isAssignableFrom(field.getType())) && jsonObject.get(field.getName()) == JsonNull.INSTANCE) {
+                if ((Map.class.isAssignableFrom(field.getType())) && jsonObject.get(field.getName()) == JsonNull.INSTANCE) {
                     field.set(entity, proxyInstanceFactory.createMapProxyInstance());
                     continue;
                 }
 
-                if(field.getGenericType() instanceof ParameterizedType){
+                if (field.getGenericType() instanceof ParameterizedType) {
                     ParameterizedType parameterizedType = (ParameterizedType) field.getGenericType();
                     field.set(entity, context.deserialize(jsonObject.get(field.getName()), parameterizedType));
-                }else {
+                } else {
                     field.set(entity, context.deserialize(jsonObject.get(field.getName()), field.getType()));
                 }
             }
@@ -78,9 +92,12 @@ public class BaseEntityDeserializer extends BaseEntityTypeAdapter implements Jso
             return entity;
         } catch (Exception e) {
             throw new IllegalStateException(e);
-        }finally {
-            if(entityResolverCreated){
+        } finally {
+            if (entityResolverCreated) {
                 entityResolverThreadLocal.set(null);
+            }
+            if (serializationSetCreated) {
+                serializationSetThreadLocal.set(null);
             }
         }
     }
