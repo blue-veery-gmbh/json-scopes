@@ -53,14 +53,14 @@ public class BaseEntityDeserializer extends BaseEntityTypeAdapter implements Jso
             String id = jsonObject.get("id").getAsString();
             Class clazz = typeNameResolver.classFromId(id);
 
-            BaseEntity entity = (BaseEntity) clazz.newInstance();
-            entity.setJsonId(id);
-            entityResolver.bindItem(id, entity);
-
-            boolean isInScope = isInScope(entity, jsonScope, serializationSet);
+            boolean isInScope = isInScope(clazz, jsonScope, serializationSet);
             if (!isInScope) {
                 return entityResolver.resolveId(id);
             }
+
+            BaseEntity entity = (BaseEntity) clazz.newInstance();
+            entity.setJsonId(id);
+            entityResolver.bindItem(id, entity);
 
             serializationSet.add(entity);
 
