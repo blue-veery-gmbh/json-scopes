@@ -11,7 +11,7 @@
 
     <groupId>com.blueveery</groupId>
     <artifactId>jackson-scopes</artifactId>
-    <version>1.0</version>
+    <version>${bv-libraries-version}</version>
 
     <dependencies>
         <dependency>
