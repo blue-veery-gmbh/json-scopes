@@ -23,7 +23,6 @@ public class BaseEntity {
         this.id = UUID.randomUUID();
     }
 
-    @JsonIgnore
     @Id
     private UUID id;
 
