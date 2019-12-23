@@ -21,6 +21,11 @@
             <artifactId>json-scopes</artifactId>
             <version>1.3.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>5.2.2.Final</version>
+        </dependency>
 
         <dependency>
             <groupId>com.google.code.findbugs</groupId>
