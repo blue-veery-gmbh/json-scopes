@@ -1,6 +1,6 @@
 package com.blueveery.bluehr.ctrls.config;
 
-import com.blueveery.bluehr.model.Consultant;
+import com.blueveery.bluehr.model.Customer;
 import com.blueveery.core.model.BaseEntity;
 import com.blueveery.scopes.ProxyInstanceFactory;
 import com.blueveery.scopes.ReflectionUtil;
@@ -21,7 +21,7 @@ public class GsonConfiguration {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.serializeNulls();
         ShortTypeNameIdResolver shortTypeNameIdResolver = new ShortTypeNameIdResolver();
-        shortTypeNameIdResolver.addPackage(Consultant.class.getPackage());
+        shortTypeNameIdResolver.addPackage(Customer.class.getPackage());
 
 
         ReflectionUtil reflectionUtil = new ReflectionUtil();

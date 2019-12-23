@@ -1,12 +1,7 @@
 package com.blueveery.bluehr.ctrls;
 
-import com.blueveery.bluehr.model.Consultant;
-import com.blueveery.bluehr.model.Enrollment;
-import com.blueveery.bluehr.services.ConsultantService;
-import com.blueveery.bluehr.services.EnrollmentService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.h2.jdbcx.JdbcConnectionPool;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -29,13 +24,11 @@ import javax.naming.InitialContext;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.servlet.ServletContext;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
-import static org.springframework.test.web.servlet.htmlunit.MockMvcWebClientBuilder.webAppContextSetup;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -44,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration()
 @ContextConfiguration(locations = {"classpath*:bluehr-ctrls-spring-context.xml"})
-public class ConsultantCtrlTest {
+public class ShoppingTest {
 
     @Autowired
     private WebApplicationContext wac;
@@ -55,12 +48,6 @@ public class ConsultantCtrlTest {
     MockMvc mockMvc;
     @Autowired
     ServletContext servletContext;
-
-    @Autowired
-    ConsultantService consultantService;
-
-    @Autowired
-    EnrollmentService enrollmentService;
 
     @Before
     public void setup() {
@@ -85,35 +72,20 @@ public class ConsultantCtrlTest {
         Map properties = new HashMap();
         properties.put("hibernate.hbm2ddl.auto", "create-drop");
         properties.put("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
-        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("bluehr-pu", properties);
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("blue-shop-pu", properties);
         ic.bind("java:jboss/jpa/BluehrEMF", entityManagerFactory);
 
     }
 
     @Test
     public void testEnrollment() throws Exception {
-        UUID id = enrollmentService.enroll("tomaszwozniak@interia.pl");
-        Enrollment enrollment = enrollmentService.find(id);
-        Consultant consultant = consultantService.find(enrollment.getConsultant().getId());
-        consultant.setMobilePhone("111 222 333");
-        consultant.getPerson().setFirstName("Tomasz");
-        consultant.getPerson().setSecondName("Wozniak");
-        consultantService.merge(consultant);
-        consultant = consultantService.find(consultant.getId());
 
-
-
-
-        id = enrollmentService.enroll("tomasz@interia.pl");
-        Enrollment secondEnrollment = enrollmentService.find(id);
-
-
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/api/enrollment/")
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/api/orders/")
                 .accept(MediaType.APPLICATION_JSON))
                 .andReturn();
-        JsonNode enrollmentNode = objectMapper.readTree(mvcResult.getResponse().getContentAsString());
+        JsonNode ordersNode = objectMapper.readTree(mvcResult.getResponse().getContentAsString());
 
-        String consultantURL = "/api/" + enrollmentNode.get(0).get("consultant").get("id").textValue();
+        String consultantURL = "/api/" + ordersNode.get(0).get("consultant").get("id").textValue();
         mvcResult = mockMvc.perform(get(consultantURL)).andExpect(status().isOk()).andReturn();
         String responseAsString = mvcResult.getResponse().getContentAsString();
         JsonNode consultantNode = objectMapper.readTree(responseAsString);

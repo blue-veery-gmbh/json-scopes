@@ -13,10 +13,10 @@
 
 
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-        <property name="entityManagerFactory" ref="bluehr-pu"/>
+        <property name="entityManagerFactory" ref="blue-shop-pu"/>
     </bean>
 
-    <jee:jndi-lookup id="bluehr-pu" jndi-name="java:jboss/jpa/BluehrEMF"
+    <jee:jndi-lookup id="blue-shop-pu" jndi-name="java:jboss/jpa/BluehrEMF"
                      expected-type="javax.persistence.EntityManagerFactory" />
 
     <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>

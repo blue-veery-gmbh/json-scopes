@@ -9,8 +9,8 @@ import javax.persistence.PersistenceContext;
 /**
  * Created by tomek on 09.09.16.
  */
-public class BluehrBaseServiceImpl<E extends BaseEntity> extends BaseServiceImpl<E> {
-    @PersistenceContext(unitName = "bluehr-pu")
+public class OrdersBaseServiceImpl<E extends BaseEntity> extends BaseServiceImpl<E> {
+    @PersistenceContext(unitName = "blue-shop-pu")
     protected EntityManager entityManager;
 
 
