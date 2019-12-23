@@ -1,6 +1,5 @@
 <persistence xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence persistence_1_0.xsd" version="1.0">
     <persistence-unit name="bluehr-pu" transaction-type="RESOURCE_LOCAL">
-        <!--<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>-->
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <non-jta-data-source>java:/bluehrDS</non-jta-data-source>
         <class>com.blueveery.core.model.BaseEntity</class>
@@ -13,7 +12,6 @@
         <class>com.blueveery.bluehr.model.SystemConfig</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
-            <!--<property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>-->
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL82Dialect"/>
             <property name="hibernate.hbm2ddl.auto" value="update"/>
             <property name="hibernate.show_sql" value="true"/>
