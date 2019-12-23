@@ -41,6 +41,10 @@ public class ShortTypeNameIdResolver implements TypeNameResolver {
     @Override
     public Class classFromId(String typeId) {
         String[] idComponents = typeId.split("/");
+        if(idComponents.length<2){
+            throw new IllegalStateException("Object id doesn't contains type information :" + typeId);
+        }
+
         return typeIdToClassMap.get(idComponents[0]);
     }
 
