@@ -16,7 +16,7 @@ public class Consultant extends PersonRole{
     private Enrollment enrolledBy;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private CVDocument cvDocument = new CVDocument();
+    private CvDocument cvDocument = new CvDocument();
 
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Enrollment enrollment;
@@ -37,11 +37,11 @@ public class Consultant extends PersonRole{
         this.mobilePhone = mobilePhone;
     }
 
-    public CVDocument getCvDocument() {
+    public CvDocument getCvDocument() {
         return cvDocument;
     }
 
-    public void setCvDocument(CVDocument cvDocument) {
+    public void setCvDocument(CvDocument cvDocument) {
         this.cvDocument = cvDocument;
     }
 

@@ -38,8 +38,7 @@ public class EntityResolver {
         try {
             BaseEntity entity = items.get(id);
             if (entity == null) {
-                String idComponents[] = (id).split("/");
-                Class baseClass = typeNameResolver.classFromId(idComponents[0]);
+                Class baseClass = typeNameResolver.classFromId(id);
                 entity = (BaseEntity) proxyInstanceFactory.createProxyInstance(baseClass);
                 entity.setJsonId(id);
                 bindItem(id, entity);

@@ -53,7 +53,8 @@ public class BaseEntitySerializer extends BaseEntityTypeAdapter implements JsonS
                 String typeName = typeNameResolver.idFromValue(entity);
                 serializationSet.add(entity);
                 jsonObject.add("id", context.serialize(typeName + "/" + entity.getId()));
-                for (Field field : reflectionUtil.getDeclaredFields(entity)) {
+                List<Field> declaredFields = reflectionUtil.getDeclaredFields(entity);
+                for (Field field : declaredFields) {
                     Object fieldValue = field.get(entity);
                     if(Collection.class.isAssignableFrom(field.getType()) && lazyLoadBordersAreEffective && !jpaSpecificOperations.valueIsLoaded(fieldValue)){
                         jsonObject.add(field.getName(), null);

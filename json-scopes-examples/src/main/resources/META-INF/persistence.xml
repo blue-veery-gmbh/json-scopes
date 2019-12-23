@@ -4,7 +4,7 @@
         <non-jta-data-source>java:/bluehrDS</non-jta-data-source>
         <class>com.blueveery.core.model.BaseEntity</class>
         <class>com.blueveery.bluehr.model.Consultant</class>
-        <class>com.blueveery.bluehr.model.CVDocument</class>
+        <class>com.blueveery.bluehr.model.CvDocument</class>
         <class>com.blueveery.bluehr.model.Enrollment</class>
         <class>com.blueveery.bluehr.model.HRAdmin</class>
         <class>com.blueveery.bluehr.model.Person</class>

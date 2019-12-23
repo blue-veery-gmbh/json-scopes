@@ -1,6 +1,6 @@
 package com.blueveery.bluehr.ctrls;
 
-import com.blueveery.bluehr.model.CVDocument;
+import com.blueveery.bluehr.model.CvDocument;
 import com.blueveery.bluehr.services.CVDocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -27,7 +27,7 @@ public class CVDocumentCtrl {
     @RequestMapping(path = "/{id}", method = RequestMethod.GET, produces = {"application/octet-stream"})
     @ResponseBody
     public void getCVDocument(@PathVariable("id") UUID id, HttpServletResponse response) throws IOException {
-        CVDocument cvDocument = cvDocumentService.find(id);
+        CvDocument cvDocument = cvDocumentService.find(id);
         response.setHeader("Content-Disposition", "attachment;filename=" + cvDocument.getFileName());
         cvDocumentService.readCVDocument(id, response.getOutputStream());
     }

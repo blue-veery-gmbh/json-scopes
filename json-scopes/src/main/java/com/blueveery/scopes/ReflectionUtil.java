@@ -27,7 +27,7 @@ public class ReflectionUtil {
     public List<Field> getDeclaredFields(BaseEntity entity) {
         Class currentClass = entity.getClass();
         List<Field> fields = new ArrayList<>();
-        while (currentClass != Object.class) {
+        while (currentClass != BaseEntity.class) {
             for (Field field : currentClass.getDeclaredFields()) {
                 if (!Modifier.isStatic(field.getModifiers()) && !Modifier.isFinal(field.getModifiers()) && field.getAnnotation(JsonIgnore.class) == null) {
                     if(!ignoredFieldNames.contains(field.getName())) {

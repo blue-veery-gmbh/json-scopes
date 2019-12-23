@@ -8,12 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -44,7 +42,7 @@ public class EnrollmentServiceImpl extends BluehrBaseServiceImpl<Enrollment> imp
         consultant.setPerson(person);
         consultant.setEmail(email);
         person.getPersonRoles().add(consultant);
-        consultant.setCvDocument(new CVDocument());
+        consultant.setCvDocument(new CvDocument());
         enrollment.setConsultant(consultant);
         //sendEmail(enrollment);
 

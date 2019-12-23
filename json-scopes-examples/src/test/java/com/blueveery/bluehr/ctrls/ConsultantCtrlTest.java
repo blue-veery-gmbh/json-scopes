@@ -123,23 +123,6 @@ public class ConsultantCtrlTest {
 
         mockMvc.perform(put).andExpect(status().isOk());
 
-        UUID secondCvDocumentId = consultantService.find(secondEnrollment.getConsultant().getId()).getCvDocument().getId();
-        String cvDocumentURL = "cvdocument/" + secondCvDocumentId;
-        Random random = new Random();
-        ((ObjectNode)consultantNode).put("mobilePhone", random.nextInt());
-        if(consultantNode.get("cvDocument") instanceof ObjectNode) {
-            ObjectNode cvDocument = (ObjectNode) consultantNode.get("cvDocument");
-            cvDocument.put("fileName", "test.doc"+random.nextInt());
-            if(cvDocument.has("ref")){
-                JsonNode ref = cvDocument.get("ref");
-                cvDocument.remove("ref");
-                cvDocument.set("id", ref);
-            }
-        }
-
-        put = put(consultantURL).contentType("application/json").
-                                            content( objectMapper.writeValueAsString(consultantNode));
-
         mockMvc.perform(put).andExpect(status().isOk());
 
     }

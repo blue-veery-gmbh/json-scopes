@@ -11,7 +11,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "cv_document")
-public class CVDocument extends BaseEntity {
+public class CvDocument extends BaseEntity {
     private String fileName;
 
     public String getFileName() {
