@@ -1,0 +1,25 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd ">
+
+    <import resource="classpath:bluehr-service-impl-spring-context.xml" />
+
+
+    <context:component-scan base-package="com.blueveery.bluehr.ctrls" />
+    <bean class="com.blueveery.scopes.gson.spring.JsonScopeRequestBodyAdvice"/>
+    <bean class="com.blueveery.scopes.gson.spring.JsonScopeResponseBodyAdvice"/>
+    <mvc:annotation-driven>
+        <mvc:message-converters>
+            <bean class="org.springframework.http.converter.StringHttpMessageConverter"/>
+            <bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter"/>
+            <bean class="com.blueveery.scopes.gson.spring.ScopedGsonHttpMessageConverter">
+                <property name="gson" ref="scopedGson" />
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+
+</beans>
