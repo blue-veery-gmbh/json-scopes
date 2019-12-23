@@ -115,7 +115,8 @@ public class ConsultantCtrlTest {
 
         String consultantURL = "/api/" + enrollmentNode.get(0).get("consultant").get("id").textValue();
         mvcResult = mockMvc.perform(get(consultantURL)).andExpect(status().isOk()).andReturn();
-        JsonNode consultantNode = objectMapper.readTree(mvcResult.getResponse().getContentAsString());
+        String responseAsString = mvcResult.getResponse().getContentAsString();
+        JsonNode consultantNode = objectMapper.readTree(responseAsString);
 
         MockHttpServletRequestBuilder put = put(consultantURL).contentType("application/json").
                 content( objectMapper.writeValueAsString(consultantNode));
