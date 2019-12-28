@@ -13,11 +13,9 @@ import com.blueveery.core.services.BaseService;
 import com.blueveery.scopes.JsonScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by tomek on 08.09.16.
@@ -35,15 +33,6 @@ public class OrderCtrl implements GetObjectCtrl<Order>,
 
     @Override
     public BaseService<Order> getService() {return orderService;}
-
-    @Transactional
-    @Override
-    public Order doGetObject(UUID id) {
-        Order order = getService().find(id);
-        order.getCustomer().getPerson().getId(); // load customer role nad person
-        order.getProductItemList().size();       // load product items
-        return order;
-    }
 
     @JsonScope(positive = true, scope = {Order.class})
     @Override

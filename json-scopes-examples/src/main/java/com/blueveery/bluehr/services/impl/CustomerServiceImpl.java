@@ -9,4 +9,11 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class CustomerServiceImpl extends OrdersBaseServiceImpl<Customer> implements CustomerService {
+
+    @Override
+    protected Customer doFind(Customer customer) {
+        customer.getPerson().getVersion(); // touch connections
+        customer.getOrderList().size();    // touch connections
+        return customer;
+    }
 }

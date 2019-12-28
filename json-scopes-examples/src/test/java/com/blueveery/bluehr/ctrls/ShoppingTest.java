@@ -229,7 +229,7 @@ public class ShoppingTest {
             MockHttpServletRequestBuilder getRequest = get("/api/" + orderNode.get("id").asText());
             MvcResult orderResponse = mockMvc.perform(getRequest).andExpect(status().isOk()).andReturn();
             System.out.println("[order with connected objects]");
-            System.out.println(orderResponse);
+            System.out.println(orderResponse.getResponse().getContentAsString());
         }
     }
 }

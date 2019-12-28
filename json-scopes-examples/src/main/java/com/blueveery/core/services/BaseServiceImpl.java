@@ -33,6 +33,10 @@ public abstract class BaseServiceImpl<E extends BaseEntity> implements BaseServi
         if (entity == null) {
             throw new NoResultException();
         }
+        return doFind(entity);
+    }
+
+    protected E doFind(E entity) {
         return entity;
     }
 
