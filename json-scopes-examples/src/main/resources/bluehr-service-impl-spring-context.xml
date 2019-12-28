@@ -9,7 +9,7 @@
         http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.3.xsd
 ">
 
-    <context:component-scan base-package="com.blueveery.bluehr.services.impl" />
+    <context:component-scan base-package="com.blueveery.blueshop.services.impl" />
 
 
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">

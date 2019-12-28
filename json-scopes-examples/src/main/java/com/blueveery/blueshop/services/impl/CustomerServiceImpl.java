@@ -1,7 +1,7 @@
-package com.blueveery.bluehr.services.impl;
+package com.blueveery.blueshop.services.impl;
 
-import com.blueveery.bluehr.model.Customer;
-import com.blueveery.bluehr.services.api.CustomerService;
+import com.blueveery.blueshop.model.Customer;
+import com.blueveery.blueshop.services.api.CustomerService;
 import org.springframework.stereotype.Component;
 
 /**

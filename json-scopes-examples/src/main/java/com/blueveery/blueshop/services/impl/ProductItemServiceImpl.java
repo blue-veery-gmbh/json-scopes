@@ -1,7 +1,7 @@
-package com.blueveery.bluehr.services.impl;
+package com.blueveery.blueshop.services.impl;
 
-import com.blueveery.bluehr.model.*;
-import com.blueveery.bluehr.services.api.ProductItemService;
+import com.blueveery.blueshop.model.*;
+import com.blueveery.blueshop.services.api.ProductItemService;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -1,6 +1,6 @@
-package com.blueveery.bluehr.ctrls.config;
+package com.blueveery.blueshop.ctrls.config;
 
-import com.blueveery.bluehr.model.Customer;
+import com.blueveery.blueshop.model.Customer;
 import com.blueveery.core.model.BaseEntity;
 import com.blueveery.scopes.ProxyInstanceFactory;
 import com.blueveery.scopes.ReflectionUtil;

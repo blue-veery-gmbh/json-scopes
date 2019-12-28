@@ -1,4 +1,4 @@
-package com.blueveery.bluehr.ctrls;
+package com.blueveery.blueshop.ctrls;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

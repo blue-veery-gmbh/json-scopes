@@ -1,4 +1,4 @@
-package com.blueveery.bluehr.model;
+package com.blueveery.blueshop.model;
 
 /**
  * Created by tomek on 12.09.16.

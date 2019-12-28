@@ -1,10 +1,10 @@
-package com.blueveery.bluehr.ctrls;
+package com.blueveery.blueshop.ctrls;
 
-import com.blueveery.bluehr.model.Customer;
-import com.blueveery.bluehr.model.Order;
-import com.blueveery.bluehr.model.Person;
-import com.blueveery.bluehr.model.ProductItem;
-import com.blueveery.bluehr.services.api.OrderService;
+import com.blueveery.blueshop.model.Customer;
+import com.blueveery.blueshop.model.Order;
+import com.blueveery.blueshop.model.Person;
+import com.blueveery.blueshop.model.ProductItem;
+import com.blueveery.blueshop.services.api.OrderService;
 import com.blueveery.core.ctrls.CreateObjectCtrl;
 import com.blueveery.core.ctrls.FindAllCtrl;
 import com.blueveery.core.ctrls.GetObjectCtrl;

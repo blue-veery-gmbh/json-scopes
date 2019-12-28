@@ -1,4 +1,4 @@
-package com.blueveery.bluehr.model;
+package com.blueveery.blueshop.model;
 
 
 import com.blueveery.core.model.BaseEntity;

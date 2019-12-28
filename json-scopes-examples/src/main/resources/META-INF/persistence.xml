@@ -3,12 +3,12 @@
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <non-jta-data-source>java:/bluehrDS</non-jta-data-source>
         <class>com.blueveery.core.model.BaseEntity</class>
-        <class>com.blueveery.bluehr.model.Customer</class>
-        <class>com.blueveery.bluehr.model.Order</class>
-        <class>com.blueveery.bluehr.model.OrderStatus</class>
-        <class>com.blueveery.bluehr.model.ProductItem</class>
-        <class>com.blueveery.bluehr.model.Person</class>
-        <class>com.blueveery.bluehr.model.PersonRole</class>
+        <class>com.blueveery.blueshop.model.Customer</class>
+        <class>com.blueveery.blueshop.model.Order</class>
+        <class>com.blueveery.blueshop.model.OrderStatus</class>
+        <class>com.blueveery.blueshop.model.ProductItem</class>
+        <class>com.blueveery.blueshop.model.Person</class>
+        <class>com.blueveery.blueshop.model.PersonRole</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL82Dialect"/>

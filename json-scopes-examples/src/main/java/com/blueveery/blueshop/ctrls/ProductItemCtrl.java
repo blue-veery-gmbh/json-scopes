@@ -1,7 +1,7 @@
-package com.blueveery.bluehr.ctrls;
+package com.blueveery.blueshop.ctrls;
 
-import com.blueveery.bluehr.model.ProductItem;
-import com.blueveery.bluehr.services.api.ProductItemService;
+import com.blueveery.blueshop.model.ProductItem;
+import com.blueveery.blueshop.services.api.ProductItemService;
 import com.blueveery.core.ctrls.CreateObjectCtrl;
 import com.blueveery.core.ctrls.FindAllCtrl;
 import com.blueveery.core.ctrls.GetObjectCtrl;

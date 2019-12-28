@@ -1,6 +1,6 @@
-package com.blueveery.bluehr.services.api;
+package com.blueveery.blueshop.services.api;
 
-import com.blueveery.bluehr.model.Customer;
+import com.blueveery.blueshop.model.Customer;
 import com.blueveery.core.services.BaseService;
 
 /**

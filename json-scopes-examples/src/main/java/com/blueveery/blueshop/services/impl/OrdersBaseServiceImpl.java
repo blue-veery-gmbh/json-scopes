@@ -1,4 +1,4 @@
-package com.blueveery.bluehr.services.impl;
+package com.blueveery.blueshop.services.impl;
 
 import com.blueveery.core.services.BaseServiceImpl;
 import com.blueveery.core.model.BaseEntity;

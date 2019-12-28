@@ -1,11 +1,9 @@
-package com.blueveery.bluehr.ctrls;
+package com.blueveery.blueshop.ctrls;
 
-import com.blueveery.bluehr.model.Person;
-import com.blueveery.bluehr.services.api.PersonService;
+import com.blueveery.blueshop.model.Person;
+import com.blueveery.blueshop.services.api.PersonService;
 import com.blueveery.core.ctrls.CreateObjectCtrl;
 import com.blueveery.core.ctrls.FindAllCtrl;
-import com.blueveery.core.ctrls.GetObjectCtrl;
-import com.blueveery.core.ctrls.UpdateObjectCtrl;
 import com.blueveery.core.services.BaseService;
 import com.blueveery.scopes.JsonScope;
 import org.springframework.beans.factory.annotation.Autowired;

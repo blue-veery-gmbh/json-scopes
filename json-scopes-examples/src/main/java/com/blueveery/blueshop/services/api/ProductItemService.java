@@ -1,6 +1,6 @@
-package com.blueveery.bluehr.services.api;
+package com.blueveery.blueshop.services.api;
 
-import com.blueveery.bluehr.model.ProductItem;
+import com.blueveery.blueshop.model.ProductItem;
 import com.blueveery.core.services.BaseService;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -1,4 +1,4 @@
-package com.blueveery.bluehr.model;
+package com.blueveery.blueshop.model;
 
 import javax.persistence.*;
 import java.util.ArrayList;
