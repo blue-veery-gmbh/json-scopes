@@ -2,7 +2,9 @@ package com.blueveery.bluehr.ctrls;
 
 import com.blueveery.bluehr.model.Customer;
 import com.blueveery.bluehr.model.Order;
+import com.blueveery.bluehr.model.Person;
 import com.blueveery.bluehr.services.api.CustomerService;
+import com.blueveery.core.ctrls.CreateObjectCtrl;
 import com.blueveery.core.ctrls.FindAllCtrl;
 import com.blueveery.core.ctrls.GetObjectCtrl;
 import com.blueveery.core.ctrls.UpdateObjectCtrl;
@@ -10,6 +12,7 @@ import com.blueveery.core.services.BaseService;
 import com.blueveery.scopes.JsonScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -22,6 +25,7 @@ import java.util.UUID;
 @JsonScope(positive = true, scope = {Customer.class})
 @RequestMapping("/api/customer")
 public class CustomerCtrl implements GetObjectCtrl<Customer>,
+                                         CreateObjectCtrl<Customer>,
                                          UpdateObjectCtrl<Customer>,
                                          FindAllCtrl<Customer> {
 
@@ -34,9 +38,13 @@ public class CustomerCtrl implements GetObjectCtrl<Customer>,
     }
 
 
-    @JsonScope(positive = true, lazyLoadBorders = true, scope = {Order.class})
+    @Transactional
+    @JsonScope(positive = true, lazyLoadBorders = true, scope = {Person.class, Order.class})
     @Override
     public Customer getObject(@PathVariable("id") UUID id) {
-        return getService().find(id);
+        Customer customer = getService().find(id);
+        customer.getPerson().getVersion(); // touch connections
+        customer.getOrderList().size();    // touch connections
+        return customer;
     }
 }

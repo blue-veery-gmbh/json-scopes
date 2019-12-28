@@ -2,6 +2,7 @@ package com.blueveery.bluehr.ctrls;
 
 import com.blueveery.bluehr.model.ProductItem;
 import com.blueveery.bluehr.services.api.ProductItemService;
+import com.blueveery.core.ctrls.CreateObjectCtrl;
 import com.blueveery.core.ctrls.FindAllCtrl;
 import com.blueveery.core.ctrls.GetObjectCtrl;
 import com.blueveery.core.ctrls.UpdateObjectCtrl;
@@ -21,15 +22,14 @@ import java.util.UUID;
 @RequestMapping("/api/product-item")
 public class ProductItemCtrl implements GetObjectCtrl<ProductItem>,
                                         FindAllCtrl<ProductItem>,
+                                        CreateObjectCtrl<ProductItem>,
                                         UpdateObjectCtrl<ProductItem> {
 
     @Autowired
     private ProductItemService productItemService;
 
     @Override
-    public BaseService<ProductItem> getService() {
-        return productItemService;
-    }
+    public BaseService<ProductItem> getService() {return productItemService;}
 
 
     @Secured({"ROLE_TEST", "ROLE_ADMIN"})
