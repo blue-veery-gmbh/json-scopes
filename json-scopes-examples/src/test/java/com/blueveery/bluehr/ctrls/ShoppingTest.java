@@ -33,8 +33,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -168,11 +167,7 @@ public class ShoppingTest {
         ObjectNode johnSmithReference = new ObjectNode(JsonNodeFactory.instance);
         johnSmithReference.set("id", customerJohnSmithFull.get("id"));
 
-        MvcResult getAllProductResponse = mockMvc.perform(get("/api/product-item/")).andExpect(status().isOk()).andReturn();
-        responseAsString = getAllProductResponse.getResponse().getContentAsString();
-        System.out.println("[product items arrays]");
-        System.out.println(responseAsString);
-        ArrayNode productItemsArray = (ArrayNode) objectMapper.readTree(responseAsString);
+        ArrayNode productItemsArray = getAllProductItems();
 
         ObjectNode order = new ObjectNode(JsonNodeFactory.instance);
         order.put("id", String.format("order/%s", UUID.randomUUID()));
@@ -195,6 +190,46 @@ public class ShoppingTest {
         System.out.println(jsonValue);
     }
 
+    private ArrayNode getAllProductItems() throws Exception {
+        String responseAsString;
+        MvcResult getAllProductResponse = mockMvc.perform(get("/api/product-item/")).andExpect(status().isOk()).andReturn();
+        responseAsString = getAllProductResponse.getResponse().getContentAsString();
+        System.out.println("[product items arrays]");
+        System.out.println(responseAsString);
+        return (ArrayNode) objectMapper.readTree(responseAsString);
+    }
 
 
+    @Test
+    public void e_updateOrderStatus() throws Exception {
+        String responseAsString;
+        MvcResult getAllOrdersResponse = mockMvc.perform(get("/api/order")).andExpect(status().isOk()).andReturn();
+        responseAsString = getAllOrdersResponse.getResponse().getContentAsString();
+        System.out.println("[orders arrays]");
+        System.out.println(responseAsString);
+        ArrayNode ordersArray = (ArrayNode) objectMapper.readTree(responseAsString);
+        for (JsonNode jsonNode : ordersArray) {
+            ObjectNode orderNode = (ObjectNode) jsonNode;
+            orderNode.put("status", "processing");
+            String orderJson = objectWriter.writeValueAsString(orderNode);
+            mockMvc.perform(put("/api/"+orderNode.get("id").asText()).contentType("application/json").content(orderJson)).andExpect(status().isOk());
+        }
+    }
+
+    @Test
+    public void f_readOrders() throws Exception {
+        String responseAsString;
+        MvcResult getAllOrdersResponse = mockMvc.perform(get("/api/order")).andExpect(status().isOk()).andReturn();
+        responseAsString = getAllOrdersResponse.getResponse().getContentAsString();
+        System.out.println("[orders arrays]");
+        System.out.println(responseAsString);
+        ArrayNode ordersArray = (ArrayNode) objectMapper.readTree(responseAsString);
+        for (JsonNode jsonNode : ordersArray) {
+            ObjectNode orderNode = (ObjectNode) jsonNode;
+            MockHttpServletRequestBuilder getRequest = get("/api/" + orderNode.get("id").asText());
+            MvcResult orderResponse = mockMvc.perform(getRequest).andExpect(status().isOk()).andReturn();
+            System.out.println("[order with connected objects]");
+            System.out.println(orderResponse);
+        }
+    }
 }

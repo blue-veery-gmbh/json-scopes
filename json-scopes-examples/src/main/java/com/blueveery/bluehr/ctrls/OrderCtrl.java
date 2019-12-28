@@ -8,6 +8,7 @@ import com.blueveery.bluehr.services.api.OrderService;
 import com.blueveery.core.ctrls.CreateObjectCtrl;
 import com.blueveery.core.ctrls.FindAllCtrl;
 import com.blueveery.core.ctrls.GetObjectCtrl;
+import com.blueveery.core.ctrls.UpdateObjectCtrl;
 import com.blueveery.core.services.BaseService;
 import com.blueveery.scopes.JsonScope;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import java.util.UUID;
 @RequestMapping("/api/order")
 public class OrderCtrl implements GetObjectCtrl<Order>,
                                          CreateObjectCtrl<Order>,
+                                         UpdateObjectCtrl<Order>,
                                          FindAllCtrl<Order> {
 
     @Autowired
