@@ -20,6 +20,7 @@ public class GsonConfiguration {
     public Gson scopedGson(){
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.serializeNulls();
+        gsonBuilder.setDateFormat("yyyy-MM-dd");
         ShortTypeNameIdResolver shortTypeNameIdResolver = new ShortTypeNameIdResolver();
         shortTypeNameIdResolver.addPackage(Customer.class.getPackage());
 

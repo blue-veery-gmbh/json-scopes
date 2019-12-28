@@ -51,4 +51,8 @@ public class Order extends BaseEntity {
     public void setCustomer(Customer customer) {
         this.customer = customer;
     }
+
+    public List<ProductItem> getProductItemList() {
+        return productItemList;
+    }
 }

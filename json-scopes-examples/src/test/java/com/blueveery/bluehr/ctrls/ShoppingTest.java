@@ -3,6 +3,7 @@ package com.blueveery.bluehr.ctrls;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -48,7 +49,6 @@ public class ShoppingTest {
     @Autowired
     private WebApplicationContext wac;
 
-    @Autowired
     ObjectMapper objectMapper;
 
     MockMvc mockMvc;
@@ -86,6 +86,9 @@ public class ShoppingTest {
 
     @Before
     public void initObjectMapper(){
+        objectMapper = new ObjectMapper();
+        objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
     }
 
@@ -136,8 +139,8 @@ public class ShoppingTest {
 
         ObjectNode johnSmithAsCustomer = new ObjectNode(JsonNodeFactory.instance);
         johnSmithAsCustomer.put("id", String.format("customer/%s", UUID.randomUUID()));
-        johnSmithAsCustomer.set("person", johnSmithReference);
         johnSmithAsCustomer.put("version", 1);
+        johnSmithAsCustomer.set("person", johnSmithReference);
         johnSmithAsCustomer.put("email", "john.smith@json-scopes.org");
         johnSmithAsCustomer.put("mobilePhone", "777 666 555");
 
@@ -162,6 +165,8 @@ public class ShoppingTest {
         JsonNode customerJohnSmithFull =  objectMapper.readTree(responseAsString);
         System.out.println("[customer with person and orders]");
         System.out.println(objectWriter.writeValueAsString(customerJohnSmithFull));
+        ObjectNode johnSmithReference = new ObjectNode(JsonNodeFactory.instance);
+        johnSmithReference.set("id", customerJohnSmithFull.get("id"));
 
         MvcResult getAllProductResponse = mockMvc.perform(get("/api/product-item/")).andExpect(status().isOk()).andReturn();
         responseAsString = getAllProductResponse.getResponse().getContentAsString();
@@ -169,8 +174,25 @@ public class ShoppingTest {
         System.out.println(responseAsString);
         ArrayNode productItemsArray = (ArrayNode) objectMapper.readTree(responseAsString);
 
+        ObjectNode order = new ObjectNode(JsonNodeFactory.instance);
+        order.put("id", String.format("order/%s", UUID.randomUUID()));
+        order.put("version", 1);
+        order.put("status", "waiting");
+        order.put("created", "2019-12-28");
+        order.set("customer", johnSmithReference);
+        order.set("productItemList", productItemsArray);
+        ObjectNode orderReference = new ObjectNode(JsonNodeFactory.instance);
+        orderReference.set("id", order.get("id"));
+        for (JsonNode jsonNode : productItemsArray) {
+            ObjectNode productItemNode = (ObjectNode) jsonNode;
+            productItemNode.set("order", orderReference);
+        }
 
-
+        String jsonValue = objectWriter.writeValueAsString(order);
+        MockHttpServletRequestBuilder postRequest = post("/api/order/")
+                .contentType("application/json").content(jsonValue);
+        mockMvc.perform(postRequest).andExpect(status().is2xxSuccessful());
+        System.out.println(jsonValue);
     }
 
 
