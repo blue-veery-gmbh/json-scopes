@@ -83,6 +83,10 @@ public class ShoppingTest {
 
     }
 
+    /**
+     * jackson mapper is used to simulate java script code to serialize object to string
+     * which is send in mock mvc request
+     */
     @Before
     public void initObjectMapper(){
         objectMapper = new ObjectMapper();
@@ -91,6 +95,10 @@ public class ShoppingTest {
         objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
     }
 
+    /**
+     * method creates few products used in later examples
+     * @throws Exception
+     */
     @Test
     public void a_createProducts() throws Exception {
         String[] itemNames = { "red car", "blue chair", "green apple"};
@@ -108,6 +116,10 @@ public class ShoppingTest {
         }
     }
 
+    /**
+     * method creates person object used in later examples
+     * @throws Exception
+     */
     @Test
     public void b_createPerson() throws Exception {
         ObjectNode johnSmith = new ObjectNode(JsonNodeFactory.instance);
@@ -124,6 +136,12 @@ public class ShoppingTest {
     }
 
 
+    /**
+     * method reads all persons and for first on the list it create new role customer
+     * customer points to persons by johnSmithReference to not to send person in customer create request.
+     * In JavaScript developer is just pointing to person object and scoped is imposed by JsonScopedSerializer
+     * @throws Exception
+     */
     @Test
     public void c_createCustomer() throws Exception {
         MvcResult getAllPersonsResponse = mockMvc.perform(get("/api/person/")).andExpect(status().isOk()).andReturn();
@@ -150,20 +168,19 @@ public class ShoppingTest {
         System.out.println(jsonValue);
     }
 
+    /**
+     * 1. method reads list of all customers
+     * 2. it gets first and reads again it with connected person object
+     * 3. it reads all products
+     * 4. next it creates order order points customer via reference johnSmithReference to limit serialization scope,
+     * normally in JavaScript it is done by JsonScopedSerializer, product item points order by reference to avoid cyclic
+     * references and in JS again it is solve by JsonScopedSerializer
+     *
+     * @throws Exception
+     */
     @Test
     public void d__createOrder() throws Exception {
-        MvcResult getAllCustomersResponse = mockMvc.perform(get("/api/customer/")).andExpect(status().isOk()).andReturn();
-        String responseAsString = getAllCustomersResponse.getResponse().getContentAsString();
-        ArrayNode customerArray = (ArrayNode) objectMapper.readTree(responseAsString);
-        System.out.println("[customers array - there is only reference to person]");
-        System.out.println(objectWriter.writeValueAsString(customerArray));
-        JsonNode customerJohnSmith = customerArray.get(0);
-
-        MvcResult getJohnSmithResponse = mockMvc.perform(get("/api/"+customerJohnSmith.get("id").asText())).andExpect(status().isOk()).andReturn();
-        responseAsString = getJohnSmithResponse.getResponse().getContentAsString();
-        JsonNode customerJohnSmithFull =  objectMapper.readTree(responseAsString);
-        System.out.println("[customer with person and orders]");
-        System.out.println(objectWriter.writeValueAsString(customerJohnSmithFull));
+        JsonNode customerJohnSmithFull = getFirstCustomerOnTheList();
         ObjectNode johnSmithReference = new ObjectNode(JsonNodeFactory.instance);
         johnSmithReference.set("id", customerJohnSmithFull.get("id"));
 
@@ -185,29 +202,50 @@ public class ShoppingTest {
 
         String jsonValue = objectWriter.writeValueAsString(order);
         MockHttpServletRequestBuilder postRequest = post("/api/order/")
-                .contentType("application/json").content(jsonValue);
+                                                        .contentType("application/json").content(jsonValue);
         mockMvc.perform(postRequest).andExpect(status().is2xxSuccessful());
         System.out.println(jsonValue);
+    }
+
+    private JsonNode getFirstCustomerOnTheList() throws Exception {
+        MvcResult getAllCustomersResponse = mockMvc.perform(get("/api/customer/")).andExpect(status().isOk()).andReturn();
+        String responseAsString = getAllCustomersResponse.getResponse().getContentAsString();
+        ArrayNode customerArray = (ArrayNode) objectMapper.readTree(responseAsString);
+        System.out.println("[customers array - there is only reference to person]");
+        System.out.println(objectWriter.writeValueAsString(customerArray));
+        JsonNode customerJohnSmith = customerArray.get(0);
+
+        MvcResult getJohnSmithResponse = mockMvc.perform(get("/api/"+customerJohnSmith.get("id").asText())).andExpect(status().isOk()).andReturn();
+        responseAsString = getJohnSmithResponse.getResponse().getContentAsString();
+        JsonNode customerJohnSmithFull =  objectMapper.readTree(responseAsString);
+        System.out.println("[customer with person and orders]");
+        System.out.println(objectWriter.writeValueAsString(customerJohnSmithFull));
+        return customerJohnSmithFull;
     }
 
     private ArrayNode getAllProductItems() throws Exception {
         String responseAsString;
         MvcResult getAllProductResponse = mockMvc.perform(get("/api/product-item/")).andExpect(status().isOk()).andReturn();
         responseAsString = getAllProductResponse.getResponse().getContentAsString();
+        ArrayNode productArray = (ArrayNode) objectMapper.readTree(responseAsString);
         System.out.println("[product items arrays]");
-        System.out.println(responseAsString);
-        return (ArrayNode) objectMapper.readTree(responseAsString);
+        System.out.println(objectWriter.writeValueAsString(productArray));
+        return productArray;
     }
 
 
+    /**
+     * method reads all orders, with narrow scope when order object is returned from server and updates it state
+     * @throws Exception
+     */
     @Test
     public void e_updateOrderStatus() throws Exception {
         String responseAsString;
         MvcResult getAllOrdersResponse = mockMvc.perform(get("/api/order")).andExpect(status().isOk()).andReturn();
         responseAsString = getAllOrdersResponse.getResponse().getContentAsString();
-        System.out.println("[orders arrays]");
-        System.out.println(responseAsString);
         ArrayNode ordersArray = (ArrayNode) objectMapper.readTree(responseAsString);
+        System.out.println("[orders arrays]");
+        System.out.println(objectWriter.writeValueAsString(ordersArray));
         for (JsonNode jsonNode : ordersArray) {
             ObjectNode orderNode = (ObjectNode) jsonNode;
             orderNode.put("status", "processing");
@@ -216,20 +254,25 @@ public class ShoppingTest {
         }
     }
 
+    /**
+     * method reads all orders, and for each order it fetches full object graph
+     * @throws Exception
+     */
     @Test
     public void f_readOrders() throws Exception {
         String responseAsString;
         MvcResult getAllOrdersResponse = mockMvc.perform(get("/api/order")).andExpect(status().isOk()).andReturn();
         responseAsString = getAllOrdersResponse.getResponse().getContentAsString();
-        System.out.println("[orders arrays]");
-        System.out.println(responseAsString);
         ArrayNode ordersArray = (ArrayNode) objectMapper.readTree(responseAsString);
+        System.out.println("[orders arrays]");
+        System.out.println(objectWriter.writeValueAsString(ordersArray));
         for (JsonNode jsonNode : ordersArray) {
             ObjectNode orderNode = (ObjectNode) jsonNode;
             MockHttpServletRequestBuilder getRequest = get("/api/" + orderNode.get("id").asText());
             MvcResult orderResponse = mockMvc.perform(getRequest).andExpect(status().isOk()).andReturn();
+            JsonNode fullOrder = objectMapper.readTree(orderResponse.getResponse().getContentAsString());
             System.out.println("[order with connected objects]");
-            System.out.println(orderResponse.getResponse().getContentAsString());
+            System.out.println(objectWriter.writeValueAsString(fullOrder));
         }
     }
 }
