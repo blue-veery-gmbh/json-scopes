@@ -191,6 +191,7 @@ Java Scripts clients and calls REST API by spring mock mvc. To avoid loops in ob
 `ShoppingTest` creates object references (JSON object which contains only object id). In JS developer doesn't have to care about it
 because it is solved automatically by JsonScopedSerializer TypesScript class. What is important in `ShoppingTest` it is what is get from server
 in responses and what is send to server in requests and how it is deserialized to JPA entities according `JsonScope` annotation 
+Request/Response payload is logged to console in formatted JSON for simpler analyzes. 
 
                
  
