@@ -134,7 +134,7 @@ All collections supported by hibernate with lazy loads are supported by JSON Sco
   
 
 ## Integration with Spring framework
-For REST endpoints developed in Spring MVC, there is provided new annotation `JsonScope` with boolean field `positive` 
+For REST endpoints developed in Spring MVC, there is provided a new annotation `JsonScope` with boolean field `positive` 
 which by default is `true` this field says 
   + if JPA classes listed in this entities should be serialised (`positive=true`) and other met in network skipped by use of proxies 
   + or JPA classes listed in this annotation should be skipped (`positive=false`) and other classes met during serialisation serialized.
@@ -149,7 +149,48 @@ for data send from client it cut off part of JSON which is out of scope so clien
  it doesn't want to send whole graph of objects just to not to break server code     
 
 ## Project configuration 
-        
+To enable json scopes serializer and JsonScope annotations, gson serializer must be configured in spring like it is done in 
+json-scopes-examples in class GsonConfiguration
+in following way:
+```java
+@Configuration
+public class GsonConfiguration {
+
+    @Bean(name="scopedGson")
+    public Gson scopedGson(){
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.serializeNulls();
+        gsonBuilder.setDateFormat("yyyy-MM-dd");
+        ShortTypeNameIdResolver shortTypeNameIdResolver = new ShortTypeNameIdResolver();
+        shortTypeNameIdResolver.addPackage(Customer.class.getPackage());
+
+
+        ReflectionUtil reflectionUtil = new ReflectionUtil();
+
+        JPASpecificOperationsHibernateImpl jpaSpecificOperations = new JPASpecificOperationsHibernateImpl();
+        ProxyInstanceFactory proxyInstanceFactory = new ProxyInstanceFactory(jpaSpecificOperations);
+        BaseEntityDeserializer baseEntityDeserializer = new BaseEntityDeserializer(reflectionUtil, shortTypeNameIdResolver, proxyInstanceFactory);
+        gsonBuilder.registerTypeHierarchyAdapter(BaseEntity.class, baseEntityDeserializer);
+
+        BaseEntitySerializer baseEntitySerializer = new BaseEntitySerializer(reflectionUtil, shortTypeNameIdResolver, jpaSpecificOperations);
+        gsonBuilder.registerTypeHierarchyAdapter(BaseEntity.class, baseEntitySerializer);
+
+
+        Gson gson = gsonBuilder.create();
+        return  gson;
+    }
+}
+``` 
+all JPA entities must be derived from `BaseEntity` 
+
+## Json Scopes Examples
+To demonstrate json scopes flexibility in fetching and sending data to server there is created maven module `json-scopes-example`
+which exposes spring REST api for simple shop, where clients could create orders for selected products.
+`ShoppingTest` is set of methods which shows full sequence of operations and they have to be run together. `ShoppingTest` simulates
+Java Scripts clients and calls REST API by spring mock mvc. To avoid loops in objects or limits object graph sent to serer
+`ShoppingTest` creates object references (JSON object which contains only object id). In JS developer doesn't have to care about it
+because it is solved automatically by JsonScopedSerializer TypesScript class. What is important in `ShoppingTest` it is what is get from server
+in responses and what is send to server in requests and how it is deserialized to JPA entities according `JsonScope` annotation 
 
                
  
@@ -165,3 +206,5 @@ for data send from client it cut off part of JSON which is out of scope so clien
 
 
                    
+
+         
