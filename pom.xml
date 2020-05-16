@@ -10,7 +10,7 @@
     <packaging>pom</packaging>
     <properties>
         <spring.version>4.3.9.RELEASE</spring.version>
-        <spring.security.version>4.2.3.RELEASE</spring.security.version>
+        <spring.security.version>5.2.1.RELEASE</spring.security.version>
     </properties>
 
     <name>json-scopes</name>
