@@ -25,7 +25,6 @@ public class ShortTypeNameIdResolverJackson extends ShortTypeNameIdResolver impl
 
 
     @Deprecated
-    @Override
     public JavaType typeFromId(String typeId) {
         return TypeFactory.defaultInstance().constructType(classFromId(typeId));
     }

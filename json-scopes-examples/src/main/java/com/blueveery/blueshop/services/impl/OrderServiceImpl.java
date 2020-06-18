@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class OrderServiceImpl extends OrdersBaseServiceImpl<Order> implements OrderService {
     @Override
+    @SuppressWarnings({"ResultOfMethodCallIgnored"})
     protected Order doFind(Order order) {
         order.getCustomer().getPerson().getId(); // load customer role nad person
         order.getProductItemList().size();       // load product items
