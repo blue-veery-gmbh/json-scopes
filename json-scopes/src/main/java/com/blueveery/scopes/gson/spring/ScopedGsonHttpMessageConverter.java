@@ -12,12 +12,6 @@ import java.lang.reflect.Type;
 public class ScopedGsonHttpMessageConverter extends GsonHttpMessageConverter {
 
     @Override
-    protected Object readInternal(Type resolvedType, Reader reader) throws Exception {
-        return super.readInternal(resolvedType, reader);
-    }
-
-
-    @Override
     protected void writeInternal(Object o, @Nullable Type type, Writer writer) throws Exception {
         getGson().getAdapter(BaseEntity.class);
         if (type instanceof ParameterizedType) {
