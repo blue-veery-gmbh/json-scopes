@@ -28,6 +28,9 @@ public class Person extends BaseEntity {
     @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
     private List<PersonRole> personRoles = new ArrayList<>();
 
+    @OneToOne(cascade=CascadeType.ALL, fetch = FetchType.LAZY)
+    private Location location;
+
     public String getFirstName() {
         return firstName;
     }
@@ -46,5 +49,13 @@ public class Person extends BaseEntity {
 
     public List<PersonRole> getPersonRoles() {
         return personRoles;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 }

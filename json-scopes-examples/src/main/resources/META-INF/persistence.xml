@@ -6,6 +6,7 @@
         <non-jta-data-source>java:/bluehrDS</non-jta-data-source>
         <class>com.blueveery.core.model.BaseEntity</class>
         <class>com.blueveery.blueshop.model.Customer</class>
+        <class>com.blueveery.blueshop.model.Location</class>
         <class>com.blueveery.blueshop.model.Order</class>
         <class>com.blueveery.blueshop.model.OrderStatus</class>
         <class>com.blueveery.blueshop.model.ProductItem</class>
