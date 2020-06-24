@@ -9,5 +9,4 @@ import java.util.List;
  * Created by tomek on 09.09.16.
  */
 public interface PersonService extends BaseService<Person> {
-    List<Person> findAllWithLocation();
 }

@@ -182,8 +182,8 @@ public class ShoppingTest {
      * @throws Exception
      */
     @Test
-    public void b__updatePersonLocation() throws Exception {
-        ResultActions perform = mockMvc.perform(get("/api/person/person-location").contentType("application/json"));
+    public void bb_updatePersonLocation() throws Exception {
+        ResultActions perform = mockMvc.perform(get("/api/person").contentType("application/json"));
         MvcResult allPersonResult = perform.andExpect(status().isOk()).andReturn();
         String responseAsString = allPersonResult.getResponse().getContentAsString();
         ArrayNode personsArray = (ArrayNode) objectMapper.readTree(responseAsString);

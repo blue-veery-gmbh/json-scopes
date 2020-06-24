@@ -1,6 +1,10 @@
 package com.blueveery.blueshop.model;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +13,7 @@ import java.util.List;
  */
 @Entity
 @DiscriminatorValue(value = "customer")
-public class Customer extends PersonRole{
+public class Customer extends PersonRole {
 
     private String email;
     private String mobilePhone;

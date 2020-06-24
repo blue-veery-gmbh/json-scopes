@@ -29,8 +29,9 @@ public class ProductItemCtrl implements GetObjectCtrl<ProductItem>,
     private ProductItemService productItemService;
 
     @Override
-    public BaseService<ProductItem> getService() {return productItemService;}
-
+    public BaseService<ProductItem> getService() {
+        return productItemService;
+    }
 
     @Secured({"ROLE_TEST", "ROLE_ADMIN"})
     @Override

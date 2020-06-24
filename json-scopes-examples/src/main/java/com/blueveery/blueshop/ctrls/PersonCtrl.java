@@ -21,22 +21,21 @@ import java.util.List;
  * Created by tomek on 08.09.16.
  */
 @Component
-@JsonScope(positive = true, scope = {Person.class, Location.class})
+@JsonScope(
+        positive = true,
+        lazyLoadBorders = false,
+        scope = {Person.class, Location.class}
+)
 @RequestMapping("/api/person")
 public class PersonCtrl implements CreateObjectCtrl<Person>,
-                                         FindAllCtrl<Person>,
-                                         UpdateObjectCtrl<Person> {
+                                   FindAllCtrl<Person>,
+                                   UpdateObjectCtrl<Person> {
 
     @Autowired
     private PersonService personService;
 
     @Override
-    public BaseService<Person> getService() {return personService;}
-
-    @Transactional
-    @RequestMapping(path = "/person-location", method = {RequestMethod.GET}, consumes = {"application/json"}, produces = {"application/json"})
-    @ResponseBody
-    public List<Person> personWithLocation(){
-        return personService.findAllWithLocation();
+    public BaseService<Person> getService() {
+        return personService;
     }
 }

@@ -11,10 +11,4 @@ import java.util.List;
  */
 @Component
 public class PersonServiceImpl extends OrdersBaseServiceImpl<Person> implements PersonService {
-
-    public List<Person> findAllWithLocation() {
-        List<Person> all = super.findAll();
-        all.forEach(p -> p.getLocation().getStreetName()); // touch object
-        return all;
-    }
 }
