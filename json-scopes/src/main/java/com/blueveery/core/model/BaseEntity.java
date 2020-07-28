@@ -34,6 +34,7 @@ public class BaseEntity {
         this.id = id;
     }
 
+    @JsonIgnore
     public void setJsonId(String jsonId) {
         String[] idComponents = jsonId.toString().split("/");
         id = UUID.fromString(idComponents[1]);
