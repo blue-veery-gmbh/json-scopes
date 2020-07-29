@@ -4,6 +4,8 @@ import com.blueveery.blueshop.model.Person;
 import com.blueveery.blueshop.services.api.PersonService;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * Created by tomek on 09.09.16.
  */

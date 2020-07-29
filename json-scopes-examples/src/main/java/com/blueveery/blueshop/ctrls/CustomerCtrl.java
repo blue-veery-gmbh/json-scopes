@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @JsonScope(positive = true, scope = {Customer.class})
 @RequestMapping("/api/customer")
 public class CustomerCtrl implements GetObjectCtrl<Customer>,
-                                         CreateObjectCtrl<Customer>,
-                                         UpdateObjectCtrl<Customer>,
-                                         FindAllCtrl<Customer> {
+                                     CreateObjectCtrl<Customer>,
+                                     UpdateObjectCtrl<Customer>,
+                                     FindAllCtrl<Customer> {
 
     @Autowired
     private CustomerService customerService;

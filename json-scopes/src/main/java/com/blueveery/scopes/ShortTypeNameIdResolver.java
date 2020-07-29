@@ -2,6 +2,7 @@ package com.blueveery.scopes;
 
 import com.blueveery.core.model.BaseEntity;
 import javassist.util.proxy.ProxyObject;
+import org.hibernate.proxy.HibernateProxy;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ConfigurationBuilder;
@@ -31,7 +32,7 @@ public class ShortTypeNameIdResolver implements TypeNameResolver {
     @Override
     public String idFromValue(Object object) {
         Class clazz = object.getClass();
-        if(object instanceof ProxyObject){
+        if(object instanceof ProxyObject || object instanceof HibernateProxy){
             clazz = object.getClass().getSuperclass();
         }
         return idFromClass(clazz);

@@ -21,18 +21,22 @@ import java.util.List;
  * Created by tomek on 08.09.16.
  */
 @Component
-@JsonScope(positive = true, lazyLoadBorders = true, scope = {Order.class, Customer.class, Person.class, ProductItem.class})
+@JsonScope(positive = true,
+           scope = {Order.class, Customer.class, Person.class, ProductItem.class}
+)
 @RequestMapping("/api/order")
 public class OrderCtrl implements GetObjectCtrl<Order>,
-                                         CreateObjectCtrl<Order>,
-                                         UpdateObjectCtrl<Order>,
-                                         FindAllCtrl<Order> {
+                                  CreateObjectCtrl<Order>,
+                                  UpdateObjectCtrl<Order>,
+                                  FindAllCtrl<Order> {
 
     @Autowired
     private OrderService orderService;
 
     @Override
-    public BaseService<Order> getService() {return orderService;}
+    public BaseService<Order> getService() {
+        return orderService;
+    }
 
     @JsonScope(positive = true, scope = {Order.class})
     @Override

@@ -1,9 +1,12 @@
-<persistence xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence persistence_1_0.xsd" version="1.0">
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence persistence_1_0.xsd" version="1.0">
     <persistence-unit name="blue-shop-pu" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <non-jta-data-source>java:/bluehrDS</non-jta-data-source>
         <class>com.blueveery.core.model.BaseEntity</class>
         <class>com.blueveery.blueshop.model.Customer</class>
+        <class>com.blueveery.blueshop.model.Location</class>
         <class>com.blueveery.blueshop.model.Order</class>
         <class>com.blueveery.blueshop.model.OrderStatus</class>
         <class>com.blueveery.blueshop.model.ProductItem</class>
@@ -14,6 +17,7 @@
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL82Dialect"/>
             <property name="hibernate.hbm2ddl.auto" value="update"/>
             <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.enable_lazy_load_no_trans" value="true"/>
             <property name="jboss.entity.manager.factory.jndi.name" value="java:jboss/jpa/BluehrEMF"/>
         </properties>
     </persistence-unit>

@@ -20,6 +20,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -128,6 +129,12 @@ public class ShoppingTest {
         johnSmith.put("firstName", "John");
         johnSmith.put("secondName", "Smith");
 
+        ObjectNode locationReference = getLocationReference();
+        ObjectNode personReference = new ObjectNode(JsonNodeFactory.instance);
+        personReference.set("id",johnSmith.get("id"));
+        locationReference.set("person", personReference);
+        johnSmith.set("location",locationReference);
+
         String jsonValue = objectWriter.writeValueAsString(johnSmith);
         MockHttpServletRequestBuilder postRequest = post("/api/person/")
                                                     .contentType("application/json").content(jsonValue);
@@ -168,6 +175,45 @@ public class ShoppingTest {
         System.out.println(jsonValue);
     }
 
+    /**
+     * Method test of update  OneToOne relation
+     * 1. Method get list persons, next update the location
+     * 2. In response we receive null reference to person in location object, because we do not touch the object
+     * @throws Exception
+     */
+    @Test
+    public void bb_updatePersonLocation() throws Exception {
+        ResultActions perform = mockMvc.perform(get("/api/person").contentType("application/json"));
+        MvcResult allPersonResult = perform.andExpect(status().isOk()).andReturn();
+        String responseAsString = allPersonResult.getResponse().getContentAsString();
+        ArrayNode personsArray = (ArrayNode) objectMapper.readTree(responseAsString);
+
+        ObjectNode johnSmith = (ObjectNode) personsArray.get(0);
+        System.out.println("GET person object response \n"+objectWriter.writeValueAsString(johnSmith));
+        ObjectNode locationReference = getLocationReference();
+        locationReference.put("flatNumber",333444);
+        johnSmith.set("location",locationReference);
+
+        String urlTemplate = "/api/person/".concat(johnSmith.get("id").asText().split("/")[1]);
+        String updatedPerson = objectWriter.writeValueAsString(johnSmith);
+        MockHttpServletRequestBuilder postRequest = put(urlTemplate).contentType("application/json").content(updatedPerson);
+        MvcResult mvcResult = mockMvc.perform(postRequest).andExpect(status().is2xxSuccessful()).andReturn();
+        System.out.println("PUT person object response\n"+objectWriter.writeValueAsString(objectMapper.readTree(mvcResult.getResponse().getContentAsString())));
+
+    }
+
+    /**
+     * @return new <code>ObjectNode</code> as location reference
+     */
+    private ObjectNode getLocationReference(){
+        return new ObjectNode(JsonNodeFactory.instance) {{
+            put("id", String.format("location/%s", UUID.randomUUID()));
+            put("flatNumber", 123456);
+            put("streetName", "Times Square");
+            put("postalCode", "99-420");
+            put("version", 1);
+        }};
+    }
     /**
      * 1. method reads list of all customers
      * 2. it gets first and reads again it with connected person object
