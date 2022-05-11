@@ -7,19 +7,19 @@ less or up to scope defined in `JsonScope`
 In Java at the server side, when JPA is used there is a frequent need to transfer data described by JPA entities to clients, 
 currently the most popular format is JSON. JPA entities are hard to serialize due to few reasons:
   + bi-directional references are common in JPA which causes endless loops during serialization
-  + reach model described by entities has many association which could cause that client will get to much data and in
+  + reach model described by entities has many association which could cause that client will get too much data and in
    the extreme case whole database
   + if we limit somehow object network during serialization from server to client by means provided by JSON serialization 
   libraries which is skipping not needed fields serialization to cut object network, after manipulation at client side 
   we get these fields as null values, which causes hard question...we get these null values because we didn't serialize 
   part of entity network or client set this fields to null
     
-Two handle mentioned problems there is created second data model which has few names
+To handle mentioned problems there is created second data model which has few names
   + Data Transfer Objects DTO 
   + Value Objects VO
   + Request Response model 
 
-for rest of this guide DTO abbreviation will be used 
+for the rest of this guide DTO abbreviation will be used 
 
 These models reflects JPA entities model but they are reducing bidirectional references and actually each endpoint has
  its own model which is its own view on JPA entities, some part/scope of the JPA model to limit serialization so 
